@@ -14,7 +14,7 @@ class Logger:
             os.mkdir(path_conf.LogPath)
 
         # 日志文件
-        log_file = os.path.join(path_conf.LogPath, "FastBlog.log")
+        log_file = os.path.join(path_conf.LogPath, "FastAutoTest.log")
 
         # loguru日志
         # more: https://github.com/Delgan/loguru#ready-to-use-out-of-the-box-without-boilerplate
