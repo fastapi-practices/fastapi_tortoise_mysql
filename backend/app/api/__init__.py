@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.gzip import GZipMiddleware
 
 from backend.app.api.v1 import v1
 from backend.app.core.conf import settings
-from backend.app.database.db import get_db
+from backend.app.database.db import register_db
+from backend.app.middleware import register_middleware
 
 
 def register_app():
@@ -21,19 +20,23 @@ def register_app():
     )
 
     # 中间件
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=["*"],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
-    app.add_middleware(GZipMiddleware)
+    register_middleware(app)
 
     # 路由
-    app.include_router(v1)
+    register_router(app)
 
     # 数据库
-    get_db(app)
+    register_db(app)
 
     return app
+
+
+def register_router(app):
+    """
+    路由
+    :param app: FastAPI
+    :return:
+    """
+    app.include_router(
+        v1,
+    )

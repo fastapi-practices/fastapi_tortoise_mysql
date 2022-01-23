@@ -2,12 +2,15 @@
 # -*- coding: utf-8 -*-
 from tortoise.contrib.fastapi import register_tortoise
 
-from backend.app.database import db_url, models
+from backend.app.aerich.env import db_url
+from backend.app.core.conf import settings
+from backend.app.models import models
 
 
-def get_db(app):
+def register_db(app):
     register_tortoise(
         app,
         db_url=db_url,
-        modules={'models': models},
+        modules={'models': [*models]},
+        add_exception_handlers=settings.ADD_EXCEPTION_HANDLERS,
     )

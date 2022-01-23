@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     RELOAD: bool = True
 
     # DB
-    ECHO = True  # 上线环境请使用 False
+    ADD_EXCEPTION_HANDLERS = True  # 线上环境请使用 False
     DB_HOST: str = '127.0.0.1'
     DB_PORT: int = 3306
     DB_USER: str = 'root'
@@ -35,6 +35,11 @@ class Settings(BaseSettings):
     ALGORITHM: str = 'HS256'
     SECRET_KEY: str = secrets.token_urlsafe(32)  # 随机密钥
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 3  # token 时效 60 * 24 * 3 = 3 天
+
+    # 中间件
+    CORS: bool = True
+    GZIP: bool = True
+    ACCESS: bool = True
 
 
 @lru_cache
