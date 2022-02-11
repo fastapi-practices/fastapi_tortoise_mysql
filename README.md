@@ -1,19 +1,21 @@
-# FastAutoTest
+# fastapi_mysql
 
 #### 介绍
-基于 fastapi + tortoise + aerich + mysql8 自动化接口测试平台
+基于 fastapi + tortoise + aerich + mysql8 demo
 
 
-# 迁移
+# 数据库迁移
 ```shell
 # 默认仓库
 cd backend/app/aerich
 
-# aerich init -t env.TORTOISE_ORM  # 这步可省略
+# demo中直接省略这两步
+# aerich init -t env.TORTOISE_ORM  
+# aerich init-db
 
-aerich init-db
+aerich upgrade
 
-# 修改数据库 model 后:
+# 当更新数据库 model 后，执行下面两个命令进行迁移
 aerich migrate
 
 aerich upgrade

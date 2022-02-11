@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 from tortoise.contrib.fastapi import register_tortoise
 
-from backend.app.aerich.env import db_url
 from backend.app.core.conf import settings
 from backend.app.models import models
+
+db_url = f"mysql://{settings.DB_USER}:{settings.DB_PASSWORD}@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_DATABASE}?charset={settings.DB_ENCODING}"
 
 
 def register_db(app):

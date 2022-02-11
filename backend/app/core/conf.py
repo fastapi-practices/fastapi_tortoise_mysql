@@ -12,10 +12,14 @@ class Settings(BaseSettings):
     # FastAPI
     TITLE: str = '自动化测试平台API'
     VERSION: str = 'v0.0.1'
-    DESCRIPTION: str = """接口自动化测试平台"""
+    DESCRIPTION: str = """
+    接口自动化测试平台
+    """
     DOCS_URL: str = '/v1/docs'
     OPENAPI_URL: str = '/v1/openapi'
     REDOCS_URL: bool = False
+
+    DEBUG = True
 
     # Uvicorn
     HOST: str = '127.0.0.1'
