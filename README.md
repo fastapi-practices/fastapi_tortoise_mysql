@@ -1,8 +1,12 @@
 # fastapi_mysql
 
 #### 介绍
-基于 fastapi + tortoise + aerich + mysql8 demo
+基于 fastapi + tortoise + aerich + mysql8 
 
+# 安装依赖
+```shell
+pip install -r requirements.txt
+```
 
 # 数据库迁移
 ```shell
