@@ -37,7 +37,7 @@ class Settings(BaseSettings):
 
     # Token
     ALGORITHM: str = 'HS256'
-    SECRET_KEY: str = secrets.token_urlsafe(32)  # 随机密钥
+    SECRET_KEY: str = '0ou59yzj-QwX8JT8Mq8o2rIOvxpwtVWH3aFH2-QLo7c'  # 密钥 (py生成方法：print(secrets.token_urlsafe(32)))
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 3  # token 时效 60 * 24 * 3 = 3 天
 
     # 中间件
