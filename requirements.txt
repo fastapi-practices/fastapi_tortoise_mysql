@@ -8,3 +8,4 @@ uvicorn==0.13.4
 path==15.1.2
 starlette==0.14.2
 python-jose==3.3.0
+fastapi-pagination==0.9.1
