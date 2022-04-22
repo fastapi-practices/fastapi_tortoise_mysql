@@ -1,4 +1,4 @@
-# fastapi_mysql
+# fastapi_tortoise_mysql
 
 #### 介绍
 基于 fastapi + tortoise + aerich + mysql8 

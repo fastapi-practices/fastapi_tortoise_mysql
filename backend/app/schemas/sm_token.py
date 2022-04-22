@@ -11,6 +11,6 @@ class Token(BaseModel):
     """
     code: int
     msg: Optional[str] = None
-    token: str
+    access_token: str
     token_type: str
     is_superuser: Optional[bool]

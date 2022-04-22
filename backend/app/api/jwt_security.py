@@ -3,19 +3,20 @@
 from datetime import datetime, timedelta
 from typing import Any, Optional, Union
 
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 from passlib.context import CryptContext
 from pydantic import ValidationError
 
 from backend.app.core.conf import settings
-from backend.app.crud import user_crud
+from backend.app.crud import crud_user
 from backend.app.models.user import User
+from backend.app.schemas import TokenError, AuthorizationError
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')  # 密码加密
 
-oauth2_schema = OAuth2PasswordBearer(tokenUrl='/v1/login')  # 指明客户端请求token的地址
+oauth2_schema = OAuth2PasswordBearer(tokenUrl='/v1/user/login')  # 指明客户端请求token的地址
 
 headers = {"WWW-Authenticate": "Bearer"}  # 异常返回规范
 
@@ -57,19 +58,24 @@ async def get_current_user(token: str = Depends(oauth2_schema)) -> User:
     :param token:
     :return:
     """
-    credentials_exception = HTTPException(
-        status.HTTP_401_UNAUTHORIZED,
-        detail="无法验证凭据",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
     try:
         # 解密token
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         user_id = payload.get('sub')
         if not user_id:
-            raise credentials_exception
+            raise TokenError
     except (jwt.JWTError, ValidationError):
-        raise credentials_exception
-    user = await user_crud.get_user_by_id(user_id)
+        raise TokenError
+    user = await crud_user.get_user_by_id(user_id)
     return user
 
+
+async def get_superuser(user: User = Depends(get_current_user)) -> User:
+    """
+    通过token获取当前用户
+    :param user:
+    :return:
+    """
+    if not user.is_superuser:
+        raise AuthorizationError
+    return user

@@ -10,11 +10,11 @@ class Settings(BaseSettings):
     """ 配置类 """
 
     # FastAPI
-    TITLE: str = '自动化测试平台API'
+    TITLE: str = 'DEMO'
     VERSION: str = 'v0.0.1'
     DESCRIPTION: str = """
-    接口自动化测试平台
-    """
+项目描述  
+"""
     DOCS_URL: str = '/v1/docs'
     OPENAPI_URL: str = '/v1/openapi'
     REDOCS_URL: bool = False
@@ -28,6 +28,7 @@ class Settings(BaseSettings):
 
     # DB
     ADD_EXCEPTION_HANDLERS = True  # 线上环境请使用 False
+    DB_ECHO = False  # 是否显示SQL语句
     DB_HOST: str = '127.0.0.1'
     DB_PORT: int = 3306
     DB_USER: str = 'root'

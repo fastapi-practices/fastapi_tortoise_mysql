@@ -4,7 +4,7 @@ import sys
 
 sys.path.append('../../../')
 
-from backend.app.database.db import db_url
+from backend.app.database.mysql_db import db_url
 from backend.app.models import models
 
 TORTOISE_ORM = {

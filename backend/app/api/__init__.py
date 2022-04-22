@@ -5,7 +5,7 @@ from fastapi_pagination import add_pagination
 
 from backend.app.api.v1 import v1
 from backend.app.core.conf import settings
-from backend.app.database.db import register_db
+from backend.app.database.mysql_db import register_db
 from backend.app.middleware import register_middleware
 
 

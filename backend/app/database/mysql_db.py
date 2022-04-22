@@ -5,7 +5,7 @@ from tortoise.contrib.fastapi import register_tortoise
 from backend.app.core.conf import settings
 from backend.app.models import models
 
-db_url = f"mysql://{settings.DB_USER}:{settings.DB_PASSWORD}@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_DATABASE}?charset={settings.DB_ENCODING}"
+db_url = f"mysql://{settings.DB_USER}:{settings.DB_PASSWORD}@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_DATABASE}?charset={settings.DB_ENCODING}&echo={settings.DB_ECHO}"
 
 
 def register_db(app):
