@@ -3,14 +3,20 @@
 #### 介绍
 基于 fastapi + tortoise + aerich + mysql8 
 
-# 安装依赖
+# 使用
+## 1. 安装依赖
+
 ```shell
 pip install -r requirements.txt
 ```
 
-# 数据库迁移
+## 2. 数据库迁移
+
 ```shell
-# 默认仓库
+1. 查看 backend/app/core/conf.py 配置文件, 检查数据库配置信息, 确保数据库配置信息正确
+
+2. 执行数据库迁移
+
 cd backend/app/aerich
 
 # demo中直接省略这两步
