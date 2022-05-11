@@ -13,3 +13,4 @@ path==15.1.2
 starlette==0.14.2
 python-jose==3.3.0
 fastapi-pagination==0.9.1
+bcrypt==3.2.2
