@@ -13,5 +13,5 @@ def register_db(app):
         app,
         db_url=db_url,
         modules={'models': [*models]},
-        add_exception_handlers=settings.ADD_EXCEPTION_HANDLERS,
+        add_exception_handlers=settings.DB_ADD_EXCEPTION_HANDLERS,
     )

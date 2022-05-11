@@ -19,32 +19,32 @@ class Settings(BaseSettings):
     OPENAPI_URL: str = '/v1/openapi'
     REDOCS_URL: bool = False
 
-    DEBUG = True
+    STATIC_FILE: bool = True
 
     # Uvicorn
-    HOST: str = '127.0.0.1'
-    PORT: int = 8000
-    RELOAD: bool = True
+    UVICORN_HOST: str = '127.0.0.1'
+    UVICORN_PORT: int = 8000
+    UVICORN_RELOAD: bool = True
 
     # DB
-    ADD_EXCEPTION_HANDLERS = True  # 线上环境请使用 False
+    DB_ADD_EXCEPTION_HANDLERS = True  # 线上环境请使用 False
     DB_ECHO = False  # 是否显示SQL语句
     DB_HOST: str = '127.0.0.1'
     DB_PORT: int = 3306
     DB_USER: str = 'root'
     DB_PASSWORD: str = '123456'
-    DB_DATABASE: str = 'autotest'
+    DB_DATABASE: str = 'ftm'
     DB_ENCODING: str = 'utf8mb4'
 
     # Token
-    ALGORITHM: str = 'HS256'
-    SECRET_KEY: str = '0ou59yzj-QwX8JT8Mq8o2rIOvxpwtVWH3aFH2-QLo7c'  # 密钥 (py生成方法：print(secrets.token_urlsafe(32)))
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 3  # token 时效 60 * 24 * 3 = 3 天
+    TOKEN_ALGORITHM: str = 'HS256'
+    TOKEN_SECRET_KEY: str = '0ou59yzj-QwX8JT8Mq8o2rIOvxpwtVWH3aFH2-QLo7c'  # 密钥 (py生成方法：print(secrets.token_urlsafe(32)))
+    TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 3  # token 时效 60 * 24 * 3 = 3 天
 
     # 中间件
-    CORS: bool = True
-    GZIP: bool = True
-    ACCESS: bool = True
+    MIDDLEWARE_CORS: bool = True
+    MIDDLEWARE_GZIP: bool = True
+    MIDDLEWARE_ACCESS: bool = True
 
 
 @lru_cache
