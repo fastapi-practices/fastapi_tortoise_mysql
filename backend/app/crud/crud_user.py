@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from tortoise.transactions import atomic
+
 from backend.app.api import jwt_security
 from backend.app.models.user import User, User_Pydantic
 
@@ -16,6 +18,7 @@ async def check_email(email: str) -> bool:
     return await User.filter(email=email).exists()
 
 
+@atomic
 async def register_user(user) -> User:
     user.password = jwt_security.get_hash_password(user.password)
     user_obj = await User.create(**user.dict(exclude_unset=True))

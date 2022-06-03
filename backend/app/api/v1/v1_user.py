@@ -28,7 +28,13 @@ async def user_login(form_data: OAuth2PasswordRequestForm = Depends()):
     # 创建token
     access_token = create_access_token(current_user.pk)
     log.success('用户 {} 登陆成功', form_data.username)
-    return Token(code=200, msg='success', access_token=access_token, token_type='Bearer', is_superuser=current_user.is_superuser)
+    return Token(
+        code=200,
+        msg='success',
+        access_token=access_token,
+        token_type='Bearer',
+        is_superuser=current_user.is_superuser
+    )
 
 
 @user.post('/register', summary='注册', response_model=Response200)
@@ -50,6 +56,6 @@ async def create_user(post: UserIn_Pydantic):
     })
 
 
-@user.get('/user', summary='获取用户信息')
+@user.get('/me', summary='获取用户信息')
 async def get_user_info(current_user: User_Pydantic = Depends(jwt_security.get_current_user)):
     return current_user

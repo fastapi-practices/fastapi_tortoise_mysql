@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi_pagination import add_pagination
 
 from backend.app.api.v1 import v1
+from backend.app.common.redis import redis_client
 from backend.app.core.conf import settings
 from backend.app.database.mysql_db import register_db
 from backend.app.middleware import register_middleware
@@ -33,6 +34,9 @@ def register_app():
 
     # 数据库
     register_db(app)
+
+    # 初始化服务
+    register_init(app)
 
     # 分页
     register_page(app)
@@ -67,6 +71,25 @@ def register_static_file(app):
     if not os.path.exists("./static"):
         os.mkdir("./static")
     app.mount("/static", StaticFiles(directory="static"), name="static")
+
+
+def register_init(app):
+    """
+    初始化连接
+
+    :param app: FastAPI
+    :return:
+    """
+
+    @app.on_event("startup")
+    async def startup_event():
+        # 连接redis
+        await redis_client.init_redis_connect()
+
+    @app.on_event("shutdown")
+    async def shutdown_event():
+        # 关闭redis连接
+        await redis_client.init_redis_connect().close()
 
 
 def register_page(app):
