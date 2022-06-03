@@ -83,13 +83,15 @@ def register_init(app):
 
     @app.on_event("startup")
     async def startup_event():
-        # 连接redis
-        await redis_client.init_redis_connect()
+        if settings.REDIS_OPEN:
+            # 连接redis
+            await redis_client.init_redis_connect()
 
     @app.on_event("shutdown")
     async def shutdown_event():
-        # 关闭redis连接
-        await redis_client.init_redis_connect().close()
+        if settings.REDIS_OPEN:
+            # 关闭redis连接
+            await redis_client.init_redis_connect().close()
 
 
 def register_page(app):
