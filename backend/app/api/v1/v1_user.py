@@ -8,7 +8,6 @@ from backend.app.api import jwt_security
 from backend.app.api.jwt_security import create_access_token
 from backend.app.common.log import log
 from backend.app.crud import crud_user
-from backend.app.crud.crud_user import register_user
 from backend.app.models.user import UserIn_Pydantic, User_Pydantic
 from backend.app.schemas import Response200
 from backend.app.schemas.sm_token import Token
@@ -29,8 +28,6 @@ async def user_login(form_data: OAuth2PasswordRequestForm = Depends()):
     access_token = create_access_token(current_user.pk)
     log.success('用户 {} 登陆成功', form_data.username)
     return Token(
-        code=200,
-        msg='success',
         access_token=access_token,
         token_type='Bearer',
         is_superuser=current_user.is_superuser
@@ -38,18 +35,18 @@ async def user_login(form_data: OAuth2PasswordRequestForm = Depends()):
 
 
 @user.post('/register', summary='注册', response_model=Response200)
-async def create_user(post: UserIn_Pydantic):
-    username = await crud_user.get_user_by_username(name=post.username)
+async def create_user(obj: UserIn_Pydantic):
+    username = await crud_user.get_user_by_username(name=obj.username)
     if username:
-        raise HTTPException(status_code=403, detail='该用户名已被注册~ 换一个吧')
-    email = await crud_user.check_email(email=post.email)
+        raise HTTPException(status_code=403, detail='该用户名已被注册~')
+    email = await crud_user.check_email(email=obj.email)
     if email:
-        raise HTTPException(status_code=403, detail='该邮箱已被注册~ 换一个吧')
+        raise HTTPException(status_code=403, detail='该邮箱已被注册~')
     try:
-        validate_email(post.email).email
+        validate_email(obj.email).email
     except EmailNotValidError:
         raise HTTPException(status_code=403, detail='邮箱格式错误，请重新输入')
-    data = await register_user(post)
+    data = await crud_user.register_user(obj)
     return Response200(msg='success', data={
         'username': data.username,
         'email': data.email

@@ -22,9 +22,8 @@ def register_app():
         openapi_url=settings.OPENAPI_URL
     )
 
-    if settings.STATIC_FILE:
-        # 注册静态文件
-        register_static_file(app)
+    # 注册静态文件
+    register_static_file(app)
 
     # 中间件
     register_middleware(app)
@@ -47,7 +46,7 @@ def register_app():
     return app
 
 
-def register_router(app):
+def register_router(app: FastAPI):
     """
     路由
 
@@ -59,21 +58,22 @@ def register_router(app):
     )
 
 
-def register_static_file(app):
+def register_static_file(app: FastAPI):
     """
     静态文件交互开发模式, 生产使用 nginx 静态资源服务
 
     :param app:
     :return:
     """
-    import os
-    from fastapi.staticfiles import StaticFiles
-    if not os.path.exists("./static"):
-        os.mkdir("./static")
-    app.mount("/static", StaticFiles(directory="static"), name="static")
+    if settings.STATIC_FILE:
+        import os
+        from fastapi.staticfiles import StaticFiles
+        if not os.path.exists("./static"):
+            os.mkdir("./static")
+        app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
-def register_init(app):
+def register_init(app: FastAPI):
     """
     初始化连接
 
@@ -94,7 +94,7 @@ def register_init(app):
             await redis_client.init_redis_connect().close()
 
 
-def register_page(app):
+def register_page(app: FastAPI):
     """
     分页查询
 

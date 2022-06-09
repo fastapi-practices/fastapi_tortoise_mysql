@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import secrets
 from functools import lru_cache
 
 from pydantic import BaseSettings
@@ -19,6 +18,7 @@ class Settings(BaseSettings):
     OPENAPI_URL: str = '/v1/openapi'
     REDOCS_URL: bool = False
 
+    # 静态文件代理
     STATIC_FILE: bool = True
 
     # Uvicorn
@@ -27,8 +27,8 @@ class Settings(BaseSettings):
     UVICORN_RELOAD: bool = True
 
     # DB
-    DB_ADD_EXCEPTION_HANDLERS = True  # 线上环境请使用 False
-    DB_ECHO = False  # 是否显示SQL语句
+    DB_ADD_EXCEPTION_HANDLERS: bool = True  # 线上环境请使用 False
+    DB_ECHO: bool = False  # 是否显示SQL语句
     DB_HOST: str = '127.0.0.1'
     DB_PORT: int = 3306
     DB_USER: str = 'root'

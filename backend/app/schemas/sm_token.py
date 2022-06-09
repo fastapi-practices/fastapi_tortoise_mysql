@@ -9,8 +9,8 @@ class Token(BaseModel):
     """
     token 返回
     """
-    code: int
-    msg: Optional[str] = None
+    code: int = 200
+    msg: Optional[str] = 'Success'
     access_token: str
     token_type: str
     is_superuser: Optional[bool]

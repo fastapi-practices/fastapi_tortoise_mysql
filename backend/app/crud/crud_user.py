@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from tortoise.transactions import atomic
+from tortoise import transactions
 
 from backend.app.api import jwt_security
-from backend.app.models.user import User, User_Pydantic
+from backend.app.models.user import User, User_Pydantic, UserIn_Pydantic
 
 
 async def get_user_by_id(pk: int) -> User:
@@ -18,8 +18,8 @@ async def check_email(email: str) -> bool:
     return await User.filter(email=email).exists()
 
 
-@atomic
-async def register_user(user) -> User:
+@transactions.atomic
+async def register_user(user: UserIn_Pydantic) -> User:
     user.password = jwt_security.get_hash_password(user.password)
     user_obj = await User.create(**user.dict(exclude_unset=True))
     return await User_Pydantic.from_tortoise_orm(user_obj)
