@@ -46,20 +46,12 @@ class InitData:
         """
         初始化集
         """
-        log.info('--------------- 连接数据库 ---------------')
-        try:
-            await Tortoise.init(config=db_config)
-        except Exception as e:
-            log.error(f'连接数据库失败 {e}')
-            raise
+        log.info('--------------- 初始化数据库连接 ---------------')
+        await Tortoise.init(config=db_config)
         log.success('--------------- 连接数据库成功 ---------------')
+
         log.info('--------------- 开始初始化数据 ---------------')
-        try:
-            async with in_transaction():
-                await self.create_superuser()
-        except Exception as e:
-            log.error(f'初始化数据发生异常 {e}')
-            raise
+        await self.create_superuser()
         log.info('--------------- 数据初始化完成 ---------------')
 
 
