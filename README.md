@@ -1,7 +1,7 @@
 # fastapi_tortoise_mysql
 
 #### 介绍
-基于 fastapi + tortoise + aerich + mysql8 
+基于 fastapi + tortoise + aerich + mysql
 
 # 使用
 ## 1. 安装依赖
@@ -13,9 +13,11 @@ pip install -r requirements.txt
 ## 2. 数据库迁移
 
 ```shell
-1. 查看 backend/app/core/conf.py 配置文件, 检查数据库配置信息, 确保数据库配置信息正确
+1. 创建数据库, 选择 utf8mb4 编码
 
-2. 执行数据库迁移
+2. 查看 backend/app/core/conf.py 配置文件, 检查并修改数据库配置信息
+
+3. 执行数据库迁移
 
 cd backend/app/aerich
 
@@ -30,3 +32,7 @@ aerich migrate
 
 aerich upgrade
 ```
+
+## 3. 初始化数据
+
+执行 `init_test_data.py` 文件

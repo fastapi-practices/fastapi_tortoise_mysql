@@ -1,17 +1,40 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from fastapi import FastAPI
 from tortoise.contrib.fastapi import register_tortoise
 
 from backend.app.core.conf import settings
 from backend.app.models import models
 
-db_url = f"mysql://{settings.DB_USER}:{settings.DB_PASSWORD}@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_DATABASE}?charset={settings.DB_ENCODING}&echo={settings.DB_ECHO}"
+db_config = {
+    'connections': {
+        'default': {
+            'engine': 'tortoise.backends.mysql',
+            'credentials': {
+                'host': f'{settings.DB_HOST}',
+                'port': f'{settings.DB_PORT}',
+                'user': f'{settings.DB_USER}',
+                'password': f'{settings.DB_PASSWORD}',
+                'database': f'{settings.DB_DATABASE}',
+                'charset': f'{settings.DB_ENCODING}',
+                'echo': f'{settings.DB_ECHO}'
+            }
+        },
+    },
+    'apps': {
+        'models': {
+            'models': [*models],
+            'default_connection': 'default',
+        },
+    },
+    'use_tz': False,
+    'timezone': 'Asia/Shanghai'
+}
 
 
-def register_db(app):
+def register_db(app: FastAPI):
     register_tortoise(
         app,
-        db_url=db_url,
-        modules={'models': [*models]},
+        config=db_config,
         add_exception_handlers=settings.DB_ADD_EXCEPTION_HANDLERS,
     )
