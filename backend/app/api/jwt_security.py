@@ -78,9 +78,9 @@ async def get_current_user(token: str = Depends(oauth2_schema)) -> User:
     return user
 
 
-async def get_superuser(user: User = Depends(get_current_user)) -> User:
+async def get_current_is_superuser(user: User = Depends(get_current_user)) -> User:
     """
-    通过token获取当前用户
+    验证当前用户是否为超级用户
 
     :param user:
     :return:

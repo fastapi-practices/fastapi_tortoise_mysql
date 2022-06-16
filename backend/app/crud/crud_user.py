@@ -10,7 +10,7 @@ from backend.app.schemas.sm_user import CreateUser, UpdateUser
 
 class CRUDUser(CRUDBase[User, CreateUser, UpdateUser]):
     async def get_user_by_id(self, pk: int) -> User:
-        return await self.get(pk)
+        return await super().get(pk)
 
     async def get_user_by_username(self, name: str) -> User:
         return await self.model.filter(username=name).first()
@@ -23,8 +23,43 @@ class CRUDUser(CRUDBase[User, CreateUser, UpdateUser]):
 
     async def register_user(self, user: CreateUser) -> User:
         user.password = jwt_security.get_hash_password(user.password)
-        user_obj = await self.create(user)
+        user_obj = await super().create(user)
         return user_obj
+
+    async def get_avatar_by_pk(self, pk: int):
+        user = await super().get(pk)
+        return user.avatar
+
+    async def delete_avatar(self, pk: int) -> None:
+        await self.model.filter(id=pk).update(avatar=None)
+        return
+
+    async def super_set(self, pk: int) -> None:
+        super_status = await self.get_user_super_status(pk)
+        if super_status:
+            await self.model.filter(id=pk).update(is_superuser=False)
+        else:
+            await self.model.filter(id=pk).update(is_superuser=True)
+        return
+
+    async def get_user_super_status(self, pk: int) -> bool:
+        user = await super().get(pk)
+        return user.is_superuser
+
+    async def active_set(self, pk: int) -> None:
+        active_status = await self.get_user_active_status(pk)
+        if active_status:
+            await self.model.filter(id=pk).update(is_active=False)
+        else:
+            await self.model.filter(id=pk).update(is_active=True)
+        return
+
+    async def get_user_active_status(self, pk: int) -> bool:
+        user = await super().get(pk)
+        return user.is_active
+
+    async def delete_user(self, pk: int) -> User:
+        return await super().delete_one(pk)
 
 
 UserDao = CRUDUser(User)
