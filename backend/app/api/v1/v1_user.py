@@ -5,7 +5,6 @@ from fastapi import APIRouter, HTTPException, Depends, Request
 from fastapi.security import OAuth2PasswordRequestForm
 
 from backend.app.api import jwt_security
-from backend.app.common.log import log
 from backend.app.common.redis import redis_client
 from backend.app.crud.crud_user import UserDao
 from backend.app.schemas import Response200
@@ -28,7 +27,6 @@ async def user_login(form_data: OAuth2PasswordRequestForm = Depends()):
         raise HTTPException(status_code=401, detail='用户已被锁定', headers=headers)
     await UserDao.update_user_login_time(current_user.pk)
     access_token = jwt_security.create_access_token(current_user.pk)
-    log.success('用户 {} 登陆成功', form_data.username)
     return Token(
         access_token=access_token,
         token_type='Bearer',
@@ -47,7 +45,6 @@ async def user_login(form_data: OAuth2PasswordRequestForm = Depends()):
 #         raise HTTPException(status_code=401, detail='用户已被锁定', headers=headers)
 #     await UserDao.update_user_login_time(current_user.pk)
 #     access_token = jwt_security.create_access_token(current_user.pk)
-#     log.success('用户 {} 登陆成功', obj.username)
 #     return Token(
 #         access_token=access_token,
 #         token_type='Bearer',
@@ -66,16 +63,15 @@ async def user_login(form_data: OAuth2PasswordRequestForm = Depends()):
 #         raise HTTPException(status_code=401, detail='用户已被锁定', headers=headers)
 #     try:
 #         captcha_code = request.app.state.captcha_uid
-#         redis_code = redis_client.get(f"{captcha_code}")
+#         redis_code = await redis_client.get(f"{captcha_code}")
 #         if not redis_code:
 #             raise HTTPException(status_code=403, detail='验证码失效，请重新获取', headers=headers)
 #     except AttributeError:
 #         raise HTTPException(status_code=403, detail='验证码失效，请重新获取', headers=headers)
-#     if redis_code.lower() != obj.captcha.lower() or redis_code.upper() != obj.captcha.upper():
+#     if redis_code.lower() != obj.captcha_code.lower() or redis_code.upper() != obj.captcha_code.upper():
 #         raise HTTPException(status_code=412, detail='验证码输入错误', headers=headers)
 #     await UserDao.update_user_login_time(current_user.pk)
 #     access_token = jwt_security.create_access_token(current_user.pk)
-#     log.success('用户 {} 登陆成功', obj.username)
 #     return Token(
 #         access_token=access_token,
 #         token_type='Bearer',

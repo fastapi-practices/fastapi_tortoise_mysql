@@ -83,15 +83,13 @@ def register_init(app: FastAPI):
 
     @app.on_event("startup")
     async def startup_event():
-        if settings.REDIS_OPEN:
-            # 连接redis
-            await redis_client.init_redis_connect()
+        # 连接redis
+        await redis_client.init_redis_connect()
 
     @app.on_event("shutdown")
     async def shutdown_event():
-        if settings.REDIS_OPEN:
-            # 关闭redis连接
-            await redis_client.init_redis_connect().close()
+        # 关闭redis连接
+        await redis_client.init_redis_connect().close()
 
 
 def register_page(app: FastAPI):

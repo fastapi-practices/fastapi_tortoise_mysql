@@ -37,12 +37,14 @@ class Settings(BaseSettings):
     DB_ENCODING: str = 'utf8mb4'
 
     # Redis
-    REDIS_OPEN: bool = False  # 是否开启Redis, 默认关闭
     REDIS_HOST: str = '127.0.0.1'
     REDIS_PORT: int = 6379
     REDIS_PASSWORD: str = ''
     REDIS_DATABASE: int = 0
     REDIS_TIMEOUT: int = 10
+
+    # Captcha
+    CAPTCHA_EXPIRATION_TIME: int = 120  # 单位：s
 
     # Token
     TOKEN_ALGORITHM: str = 'HS256'
