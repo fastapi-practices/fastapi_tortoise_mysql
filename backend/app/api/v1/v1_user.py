@@ -126,7 +126,7 @@ async def password_reset_captcha(username_or_email: str, response: Response):
         try:
             response.delete_cookie(key='fastapi_reset_pwd_code')
             response.delete_cookie(key='fastapi_reset_pwd_username')
-            response.set_cookie(key='fastapi_reset_pwd_code-code', value=sha256(code.encode('utf-8')).hexdigest(),
+            response.set_cookie(key='fastapi_reset_pwd_code', value=sha256(code.encode('utf-8')).hexdigest(),
                                 max_age=settings.COOKIES_MAX_AGE)
             response.set_cookie(key='fastapi_reset_pwd_username', value=username_or_email,
                                 max_age=settings.COOKIES_MAX_AGE)
@@ -163,8 +163,8 @@ async def password_reset_captcha(username_or_email: str, response: Response):
 async def password_reset(obj: ResetPassword, request: Request, response: Response):
     pwd1 = obj.password1
     pwd2 = obj.password2
-    cookie_reset_pwd_username = request.cookies.get('fastapi_reset_pwd_username')
     cookie_reset_pwd_code = request.cookies.get('fastapi_reset_pwd_code')
+    cookie_reset_pwd_username = request.cookies.get('fastapi_reset_pwd_username')
     if pwd1 != pwd2:
         raise HTTPException(status_code=403, detail='两次密码输入不一致，请重新输入')
     if cookie_reset_pwd_username is None or cookie_reset_pwd_code is None:

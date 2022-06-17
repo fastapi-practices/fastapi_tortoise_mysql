@@ -34,10 +34,10 @@ class CRUDUser(CRUDBase[User, CreateUser, UpdateUser]):
         user = await self.model.filter(email=email).first()
         return user.username
 
-    async def reset_password(self, username: str, password: str) -> None:
+    async def reset_password(self, username: str, password: str) -> int:
         new_pwd = jwt_security.get_hash_password(password)
-        await self.model.filter(username=username).update(password=new_pwd)
-        return
+        result = await self.model.filter(username=username).update(password=new_pwd)
+        return result
 
     async def update_userinfo(self, current_user: User, username: str, email: str, mobile_number: str, wechat: str,
                               qq: str, blog_address: str, introduction: str, avatar: str) -> User:

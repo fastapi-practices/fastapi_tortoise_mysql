@@ -57,12 +57,12 @@ fastapi_tortoise_mysql. 🚀
     EMAIL_DESCRIPTION: str = 'fastapi-mysql-demo'  # 默认发件说明
     EMAIL_SERVER: str = 'smtp.qq.com'
     EMAIL_PORT: int = 465
-    EMAIL_USER: str = 'xxxxxx-nav@qq.com'
-    EMAIL_PASSWORD: str = 'fasdfaxxxxxxxxx'  # 授权密码，非邮箱密码
+    EMAIL_USER: str = 'xxxxx-nav@qq.com'
+    EMAIL_PASSWORD: str = 'hahahalueluelue'  # 授权密码，非邮箱密码
     EMAIL_SSL: bool = True  # 是否使用ssl
 
     # Cookies
-    COOKIES_MAX_AGE: int = 10  # 单位：s
+    COOKIES_MAX_AGE: int = 60 * 5  # 单位：s
 
     # 中间件
     MIDDLEWARE_CORS: bool = True
