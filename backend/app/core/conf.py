@@ -9,14 +9,16 @@ class Settings(BaseSettings):
     """ 配置类 """
 
     # FastAPI
-    TITLE: str = 'DEMO'
+    TITLE: str = 'FastAPI'
     VERSION: str = 'v0.0.1'
     DESCRIPTION: str = """
-项目描述  
+fastapi_tortoise_mysql. 🚀
+
+点击跳转 -> [master](https://gitee.com/wu_cl/fastapi_tortoise_mysql)
 """
     DOCS_URL: str = '/v1/docs'
     OPENAPI_URL: str = '/v1/openapi'
-    REDOCS_URL: bool = False
+    REDOCS_URL: str = None
 
     # 静态文件代理
     STATIC_FILE: bool = True
@@ -44,12 +46,23 @@ class Settings(BaseSettings):
     REDIS_TIMEOUT: int = 10
 
     # Captcha
-    CAPTCHA_EXPIRATION_TIME: int = 120  # 单位：s
+    CAPTCHA_EXPIRATION_TIME: int = 60 * 2  # 单位：s
 
     # Token
     TOKEN_ALGORITHM: str = 'HS256'
     TOKEN_SECRET_KEY: str = '0ou59yzj-QwX8JT8Mq8o2rIOvxpwtVWH3aFH2-QLo7c'  # 密钥 (py生成方法：print(secrets.token_urlsafe(32)))
-    TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 3  # token 时效 60 * 24 * 3 = 3 天
+    TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 3  # 单位：m
+
+    # Email
+    EMAIL_DESCRIPTION: str = 'fastapi-mysql-demo'  # 默认发件说明
+    EMAIL_SERVER: str = 'smtp.qq.com'
+    EMAIL_PORT: int = 465
+    EMAIL_USER: str = 'xxxxxx-nav@qq.com'
+    EMAIL_PASSWORD: str = 'fasdfaxxxxxxxxx'  # 授权密码，非邮箱密码
+    EMAIL_SSL: bool = True  # 是否使用ssl
+
+    # Cookies
+    COOKIES_MAX_AGE: int = 10  # 单位：s
 
     # 中间件
     MIDDLEWARE_CORS: bool = True

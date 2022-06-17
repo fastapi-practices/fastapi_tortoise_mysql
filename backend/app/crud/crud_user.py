@@ -26,6 +26,34 @@ class CRUDUser(CRUDBase[User, CreateUser, UpdateUser]):
         user_obj = await super().create(user)
         return user_obj
 
+    async def get_email_by_username(self, username: str) -> str:
+        user = await self.model.filter(username=username).first()
+        return user.email
+
+    async def get_username_by_email(self, email: str) -> str:
+        user = await self.model.filter(email=email).first()
+        return user.username
+
+    async def reset_password(self, username: str, password: str) -> None:
+        new_pwd = jwt_security.get_hash_password(password)
+        await self.model.filter(username=username).update(password=new_pwd)
+        return
+
+    async def update_userinfo(self, current_user: User, username: str, email: str, mobile_number: str, wechat: str,
+                              qq: str, blog_address: str, introduction: str, avatar: str) -> User:
+        new_info = {
+            "username": username,
+            "email": email,
+            "mobile_number": mobile_number,
+            "wechat": wechat,
+            "qq": qq,
+            "blog_address": blog_address,
+            "introduction": introduction,
+            "avatar": avatar
+        }
+        new_user = await super().update_one(current_user.pk, new_info)
+        return new_user
+
     async def get_avatar_by_pk(self, pk: int):
         user = await super().get(pk)
         return user.avatar

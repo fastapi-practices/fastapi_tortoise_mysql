@@ -14,8 +14,10 @@ class Auth2(Auth):
 
 CreateUser = pydantic_model_creator(User, include=('username', 'password', 'email'), name='CreateUser')
 
-UpdateUser = pydantic_model_creator(User, include=('username', 'email', 'mobile_number', 'wechat', 'qq',
-                                                   'blog_address', 'introduction'), name='UpdateUser')
+
+class UpdateUser(BaseModel):
+    ...
+
 
 GetUserInfo = pydantic_model_creator(User, exclude=('password',), name='GetUserInfo')
 

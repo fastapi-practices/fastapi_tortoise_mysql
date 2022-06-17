@@ -1,21 +1,29 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import os
+from hashlib import sha256
 
+import aiofiles
 from email_validator import validate_email, EmailNotValidError
-from fastapi import APIRouter, HTTPException, Depends, Request
+from fast_captcha import text_captcha
+from fastapi import APIRouter, HTTPException, Depends, Request, Response, Form, UploadFile, File
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_pagination.ext.tortoise import paginate
+from tortoise import timezone
 
 from backend.app.api import jwt_security
 from backend.app.common.log import log
 from backend.app.common.pagination import Page
 from backend.app.common.redis import redis_client
+from backend.app.core.conf import settings
 from backend.app.core.path_conf import AvatarPath
 from backend.app.crud.crud_user import UserDao
 from backend.app.schemas import Response200, Response404
 from backend.app.schemas.sm_token import Token
-from backend.app.schemas.sm_user import CreateUser, GetUserInfo, Auth, Auth2
+from backend.app.schemas.sm_user import CreateUser, GetUserInfo, Auth, Auth2, ResetPassword
+from backend.app.utils import re_verify
+from backend.app.utils.format_string import cut_path
+from backend.app.utils.send_email import send_verification_code_email
 
 user = APIRouter()
 
@@ -99,7 +107,7 @@ async def create_user(request: Request, obj: CreateUser):
     if email:
         raise HTTPException(status_code=403, detail='该邮箱已被注册~')
     try:
-        validate_email(obj.email).email
+        validate_email(obj.email, check_deliverability=False).email
     except EmailNotValidError:
         raise HTTPException(status_code=403, detail='邮箱格式错误，请重新输入')
     new_user = await UserDao.register_user(obj)
@@ -109,14 +117,65 @@ async def create_user(request: Request, obj: CreateUser):
     return Response200(data=data)
 
 
-@user.post('/password/reset/captcha', summary='获取密码重置验证码', description='可以通过用户名或者邮箱重置密码')
-async def password_reset_captcha():
-    return {'msg': 'on the way'}
+@user.post('/password/reset/vcode', summary='获取密码重置验证码', description='可以通过用户名或者邮箱重置密码')
+async def password_reset_captcha(username_or_email: str, response: Response):
+    code = text_captcha()
+    # 输入为用户名时
+    current_user = await UserDao.get_user_by_username(username_or_email)
+    if current_user:
+        try:
+            response.delete_cookie(key='fastapi_reset_pwd_code')
+            response.delete_cookie(key='fastapi_reset_pwd_username')
+            response.set_cookie(key='fastapi_reset_pwd_code-code', value=sha256(code.encode('utf-8')).hexdigest(),
+                                max_age=settings.COOKIES_MAX_AGE)
+            response.set_cookie(key='fastapi_reset_pwd_username', value=username_or_email,
+                                max_age=settings.COOKIES_MAX_AGE)
+        except Exception as e:
+            log.error('无法发送验证码 {}'.format(e))
+            raise HTTPException(status_code=500, detail=f'内部错误，无法发送验证码 {e}')
+        current_user_email = await UserDao.get_email_by_username(current_user.username)
+        await send_verification_code_email(current_user_email, code)
+        return Response200()
+    # 输入为邮箱时
+    else:
+        try:
+            validate_email(username_or_email, check_deliverability=False)
+        except EmailNotValidError:
+            raise HTTPException(status_code=404, detail='用户名不存在，请重新输入')
+        current_email = await UserDao.check_email(username_or_email)
+        if not current_email:
+            raise HTTPException(status_code=404, detail='邮箱不存在，请重新输入')
+        try:
+            response.delete_cookie(key='fastapi_reset_pwd_code')
+            response.delete_cookie(key='fastapi_reset_pwd_username')
+            response.set_cookie(key='fastapi_reset_pwd_code', value=sha256(code.encode('utf-8')).hexdigest(),
+                                max_age=settings.COOKIES_MAX_AGE)
+            username = await UserDao.get_username_by_email(username_or_email)
+            response.set_cookie(key='fastapi_reset_pwd_username', value=username, max_age=settings.COOKIES_MAX_AGE)
+        except Exception as e:
+            log.error('无法发送验证码 {}'.format(e))
+            raise HTTPException(status_code=500, detail=f'内部错误，无法发送验证码 {e}')
+        await send_verification_code_email(username_or_email, code)
+        return Response200()
 
 
 @user.post('/password/reset', summary='密码重置请求')
-async def password_reset():
-    return {'msg': 'on the way'}
+async def password_reset(obj: ResetPassword, request: Request, response: Response):
+    pwd1 = obj.password1
+    pwd2 = obj.password2
+    cookie_reset_pwd_username = request.cookies.get('fastapi_reset_pwd_username')
+    cookie_reset_pwd_code = request.cookies.get('fastapi_reset_pwd_code')
+    if pwd1 != pwd2:
+        raise HTTPException(status_code=403, detail='两次密码输入不一致，请重新输入')
+    if cookie_reset_pwd_username is None or cookie_reset_pwd_code is None:
+        raise HTTPException(status_code=404, detail='验证码已失效，请重新获取验证码')
+    if cookie_reset_pwd_code != sha256(obj.code.encode('utf-8')).hexdigest():
+        raise HTTPException(status_code=403, detail='验证码错误, 请重新输入')
+    if not await UserDao.reset_password(cookie_reset_pwd_username, obj.password2):
+        raise HTTPException(status_code=500, detail='内部错误，密码重置失败')
+    response.delete_cookie(key='fastapi_reset_pwd_code')
+    response.delete_cookie(key='fastapi_reset_pwd_username')
+    return Response200()
 
 
 @user.get('/password/reset/done', summary='重置密码完成')
@@ -125,8 +184,61 @@ def password_reset_done():
 
 
 @user.put('/me', summary='更新用户信息')
-async def update_userinfo(current_user=Depends(jwt_security.get_current_user)):
-    return {'msg': 'on the way'}
+async def update_userinfo(
+        username: str = Form(..., title='用户名'),
+        email: str = Form(..., title='邮箱'),
+        mobile_number: str = Form(None, title='手机号'),
+        wechat: str = Form(None, title='微信'),
+        qq: str = Form(None, title='QQ'),
+        blog_address: str = Form(None, title='博客地址'),
+        introduction: str = Form(None, title='自我介绍'),
+        avatar: UploadFile = File(None),
+        current_user=Depends(jwt_security.get_current_user)
+):
+    try:
+        validate_email(email, check_deliverability=False).email
+    except EmailNotValidError:
+        raise HTTPException(status_code=403, detail='邮箱格式错误，请重新输入')
+    if current_user.username != username:
+        _username = await UserDao.get_user_by_username(username)
+        if _username:
+            raise HTTPException(status_code=403, detail='用户名已注册, 请更换用户名')
+    if current_user.email != email:
+        _email = await UserDao.check_email(email)
+        if _email:
+            raise HTTPException(status_code=403, detail='邮箱已注册, 请更换邮箱')
+    if mobile_number is not None:
+        if not re_verify.is_mobile(mobile_number):
+            raise HTTPException(status_code=403, detail='手机号码格式错误')
+    if wechat is not None:
+        if not re_verify.is_wechat(wechat):
+            raise HTTPException(status_code=403, detail='微信号码输入有误')
+    if qq is not None:
+        if not re_verify.is_qq(qq):
+            raise HTTPException(status_code=403, detail='QQ号码输入有误')
+    current_filename = await UserDao.get_avatar_by_pk(current_user.id)
+    if avatar is not None:
+        if current_filename is not None:
+            try:
+                os.remove(AvatarPath + current_filename)
+            except Exception as e:
+                log.warning('用户 {} 更新头像时，原头像文件 {} 删除失败\n{}', current_user.username, current_filename, e)
+        new_file = await avatar.read()
+        if 'image' not in avatar.content_type:
+            raise HTTPException(status_code=403, detail='文件格式错误，请重新选择图片')
+        _file_name = str(timezone.now().strftime('%Y%m%d%H%M%S.%f')) + '_' + avatar.filename
+        if not os.path.exists(AvatarPath):
+            os.makedirs(AvatarPath)
+        async with aiofiles.open(AvatarPath + f'{_file_name}', 'wb') as f:
+            await f.write(new_file)
+    else:
+        _file_name = current_filename
+    new_user = await UserDao.update_userinfo(current_user, username, email, mobile_number, wechat, qq, blog_address,
+                                             introduction, _file_name)
+    data = await GetUserInfo.from_tortoise_orm(new_user)
+    if isinstance(_file_name, str):
+        data.avatar = cut_path(AvatarPath + _file_name)[1]
+    return Response200(data=data)
 
 
 @user.delete('/me/avatar', summary='删除头像文件')
