@@ -1,8 +1,8 @@
 # 监听内网端口
-bind = '127.0.0.1:8001'
+bind = '0.0.0.0:8001'
 
 # 工作目录
-chdir = '/root/ftm/backend/app'
+chdir = '/ftm/backend/app'
 
 # 并行工作进程数
 workers = 4
@@ -19,7 +19,7 @@ timeout = 120
 # 设置守护进程,将进程交给 supervisor 管理；如果设置为 True 时，supervisor 启动日志为：
 # gave up: fastapi_server entered FATAL state, too many start retries too quickly
 # 则需要将此改为: False
-daemon = True
+daemon = False
 
 # 工作模式协程
 worker_class = 'uvicorn.workers.UvicornWorker'
@@ -28,7 +28,7 @@ worker_class = 'uvicorn.workers.UvicornWorker'
 worker_connections = 2000
 
 # 设置进程文件目录
-pidfile = '/root/ftm/backend/app/gunicorn.pid'
+pidfile = '/ftm/gunicorn.pid'
 
 # 设置访问日志和错误信息日志路径
 accesslog = '/var/log/fastapi_server/gunicorn_access.log'

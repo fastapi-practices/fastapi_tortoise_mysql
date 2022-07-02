@@ -5,14 +5,16 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: "ftm-server"
+    container_name: "ftm_server"
     restart: always
     depends_on:
       - mysql
       - redis
       - nginx
+    volumes:
+      - ./docker_conf.py:/ftm/backend/app/core/conf.py
     networks:
-      ftm-network:
+      ftm_network:
         aliases:
           - ftm_backend_server
     command: supervisord -c supervisor.conf
@@ -30,10 +32,10 @@ services:
     volumes:
       - /var/lib/mysql
     networks:
-      - ftm-network
+      - ftm_network
 
   redis:
-    image: redis:6.0
+    image: redis:6.2.7
     ports:
       - "6379:6379"
     container_name: "redis"
@@ -43,19 +45,19 @@ services:
     volumes:
       - /var/lib/redis
     networks:
-      - ftm-network
+      - ftm_network
 
   nginx:
     image: nginx
     ports:
-      - "8000:8000"
+      - "8000:80"
     container_name: "nginx"
     restart: always
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     networks:
-      - ftm-network
+      - ftm_network
 
 networks:
-  ftm-network:
+  ftm_network:
     driver: bridge
