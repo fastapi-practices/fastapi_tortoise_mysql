@@ -12,6 +12,7 @@ services:
       - redis
       - nginx
     volumes:
+      - ./backend:/ftm/backend
       - ./docker_conf.py:/ftm/backend/app/core/conf.py
     networks:
       ftm_network:

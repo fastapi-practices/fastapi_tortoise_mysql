@@ -54,7 +54,7 @@ fastapi_tortoise_mysql. 🚀
     TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 3  # 单位：m
 
     # Email
-    EMAIL_DESCRIPTION: str = 'fastapi-mysql-demo'  # 默认发件说明
+    EMAIL_DESCRIPTION: str = 'fastapi_tortoise_mysql'  # 默认发件说明
     EMAIL_SERVER: str = 'smtp.qq.com'
     EMAIL_PORT: int = 465
     EMAIL_USER: str = 'xxxxx-nav@qq.com'
