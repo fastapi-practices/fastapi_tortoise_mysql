@@ -30,7 +30,7 @@
 
 ### 1: 传统
 
-1. 安装依赖, *ps: 非 liunx 操作系统请先将 requirements.txt 文件中的 uvloop 包删掉*
+1. 安装依赖
     ```shell
     pip install -r requirements.txt
     ```
