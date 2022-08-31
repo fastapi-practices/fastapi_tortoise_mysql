@@ -3,9 +3,8 @@
 
 from email_validator import validate_email, EmailNotValidError
 from tortoise import Tortoise, run_async
-from tortoise.transactions import in_transaction
 
-from backend.app.api.jwt_security import get_hash_password
+from backend.app.common.security.jwt_security import get_hash_password
 from backend.app.common.log import log
 from backend.app.database.mysql_db import db_config
 from backend.app.models.user import User

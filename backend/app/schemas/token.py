@@ -6,9 +6,6 @@ from pydantic import BaseModel
 
 
 class Token(BaseModel):
-    """
-    token 返回
-    """
     code: int = 200
     msg: Optional[str] = 'Success'
     access_token: str

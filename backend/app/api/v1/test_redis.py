@@ -3,26 +3,26 @@
 from fastapi import APIRouter
 
 from backend.app.common.redis import redis_client
-from backend.app.schemas import Response200
+from backend.app.common.response.response_schema import Response200
 
-rd = APIRouter()
+redis = APIRouter()
 
 
-@rd.post('')
+@redis.post('')
 async def test_redis():
     result = await redis_client.set('test', 'test')
     if result:
         return Response200(data=result)
 
 
-@rd.get('')
+@redis.get('')
 async def get_redis():
     result = await redis_client.get('test')
     if result:
         return Response200(data=result)
 
 
-@rd.delete('')
+@redis.delete('')
 async def test_redis():
     result = await redis_client.delete('test')
     if result:

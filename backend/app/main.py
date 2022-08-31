@@ -3,7 +3,7 @@
 import uvicorn
 from path import Path
 
-from backend.app.api import register_app
+from backend.app.api.registrar import register_app
 from backend.app.common.log import log
 from backend.app.core.conf import settings
 

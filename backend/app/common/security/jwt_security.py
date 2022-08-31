@@ -9,10 +9,10 @@ from jose import jwt
 from passlib.context import CryptContext
 from pydantic import ValidationError
 
+from backend.app.common.excpetion.exception_classes import AuthorizationException, TokenException
 from backend.app.core.conf import settings
 from backend.app.crud.crud_user import UserDao
 from backend.app.models.user import User
-from backend.app.schemas import TokenError, AuthorizationError
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')  # 密码加密
 
@@ -71,9 +71,9 @@ async def get_current_user(token: str = Depends(oauth2_schema)) -> User:
         payload = jwt.decode(token, settings.TOKEN_SECRET_KEY, algorithms=[settings.TOKEN_ALGORITHM])
         user_id = payload.get('sub')
         if not user_id:
-            raise TokenError
+            raise TokenException
     except (jwt.JWTError, ValidationError):
-        raise TokenError
+        raise TokenException
     user = await UserDao.get_user_by_id(user_id)
     return user
 
@@ -86,5 +86,5 @@ async def get_current_is_superuser(user: User = Depends(get_current_user)) -> Us
     :return:
     """
     if not user.is_superuser:
-        raise AuthorizationError
+        raise AuthorizationException
     return user

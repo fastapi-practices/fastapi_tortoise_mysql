@@ -20,6 +20,6 @@ def register_middleware(app) -> None:
     # gzip
     if settings.MIDDLEWARE_GZIP:
         app.add_middleware(GZipMiddleware)
+    # 接口访问日志
     if settings.MIDDLEWARE_ACCESS:
-        # 接口访问日志
         app.add_middleware(AccessMiddleware)

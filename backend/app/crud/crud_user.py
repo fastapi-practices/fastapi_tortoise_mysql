@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 from tortoise import timezone
 
-from backend.app.api import jwt_security
+from backend.app.common.security import jwt_security
 from backend.app.crud.base import CRUDBase
 from backend.app.models.user import User
-from backend.app.schemas.sm_user import CreateUser, UpdateUser
+from backend.app.schemas.user import CreateUser, UpdateUser
 
 
 class CRUDUser(CRUDBase[User, CreateUser, UpdateUser]):

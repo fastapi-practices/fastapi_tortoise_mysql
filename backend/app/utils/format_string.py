@@ -14,7 +14,3 @@ def cut_path(path: str = AvatarPath, split_point: str = 'app') -> list:
     """
     after_path = path.split(split_point)
     return after_path
-
-
-if __name__ == '__main__':
-    print(cut_path())

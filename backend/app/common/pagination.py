@@ -48,7 +48,7 @@ class Page(AbstractPage[T], Generic[T]):
         page = params.page
         size = params.size
         total_pages = math.ceil(total / params.size)
-        next = f"?page={page + 1}&size={size}" if (page + 1) <= total_pages else "null"
+        next = f"?page={page + 1}&size={size}" if (page + 1) <= total_pages else "null"  # noqa
         previous = f"?page={page - 1}&size={size}" if (page - 1) >= 1 else "null"
 
         return cls(

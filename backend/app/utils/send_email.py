@@ -11,7 +11,8 @@ from backend.app.utils.generate_string import get_uuid
 
 __only_code = get_uuid()
 
-SEND_RESET_PASSWORD_TEXT = f"""您的重置密码验证码为：{__only_code}\n为了不影响您正常使用，请在{int(settings.COOKIES_MAX_AGE / 60)}分钟内完成密码重置"""
+SEND_RESET_PASSWORD_TEXT = f"您的重置密码验证码为：{__only_code}\n为了不影响您正常使用，" \
+                           f"请在{int(settings.COOKIES_MAX_AGE / 60)}分钟内完成密码重置"
 
 
 async def send_verification_code_email(to: str, code: str, text: str = SEND_RESET_PASSWORD_TEXT):

@@ -10,10 +10,10 @@ services:
     depends_on:
       - mysql
       - redis
-      - nginx
     volumes:
       - ./backend:/ftm/backend
       - ./docker_conf.py:/ftm/backend/app/core/conf.py
+      - ftm_static:/ftm/backend/app/static
     networks:
       ftm_network:
         aliases:
@@ -55,10 +55,14 @@ services:
     container_name: "nginx"
     restart: always
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ftm_static:/www/ftm/backend/app/static
     networks:
       - ftm_network
 
 networks:
   ftm_network:
     driver: bridge
+
+volumes:
+  ftm_static:

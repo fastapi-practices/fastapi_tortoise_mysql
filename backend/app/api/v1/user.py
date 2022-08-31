@@ -11,16 +11,17 @@ from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_pagination.ext.tortoise import paginate
 from tortoise import timezone
 
-from backend.app.api import jwt_security
+from backend.app.common.redis import redis_client
+from backend.app.common.response.response_code import ErrorCode
+from backend.app.common.security import jwt_security
 from backend.app.common.log import log
 from backend.app.common.pagination import Page
-from backend.app.common.redis import redis_client
+from backend.app.common.response.response_schema import Response200, Response404, ResponseError
 from backend.app.core.conf import settings
 from backend.app.core.path_conf import AvatarPath
 from backend.app.crud.crud_user import UserDao
-from backend.app.schemas import Response200, Response404
-from backend.app.schemas.sm_token import Token
-from backend.app.schemas.sm_user import CreateUser, GetUserInfo, Auth, Auth2, ResetPassword
+from backend.app.schemas.token import Token
+from backend.app.schemas.user import CreateUser, GetUserInfo, ResetPassword, Auth2, Auth
 from backend.app.utils import re_verify
 from backend.app.utils.format_string import cut_path
 from backend.app.utils.send_email import send_verification_code_email
@@ -83,7 +84,7 @@ async def user_login(form_data: OAuth2PasswordRequestForm = Depends()):
 #     except AttributeError:
 #         raise HTTPException(status_code=403, detail='验证码失效，请重新获取', headers=headers)
 #     if redis_code.lower() != obj.captcha_code.lower() or redis_code.upper() != obj.captcha_code.upper():
-#         raise HTTPException(status_code=412, detail='验证码输入错误', headers=headers)
+#         return ResponseError(ErrorCode.IMAGE_CODE_ERROR)
 #     await UserDao.update_user_login_time(current_user.pk)
 #     access_token = jwt_security.create_access_token(current_user.pk)
 #     return Token(
@@ -260,7 +261,8 @@ async def get_user_info(userinfo=Depends(jwt_security.get_current_user)):
     return userinfo
 
 
-@user.get('', summary='获取所有用户', response_model=Page[GetUserInfo], dependencies=[Depends(jwt_security.get_current_user)])
+@user.get('', summary='获取所有用户', response_model=Page[GetUserInfo], dependencies=[Depends(
+    jwt_security.get_current_user)])
 async def get_all_users():
     return await paginate(UserDao.model.all().order_by('-id'))
 

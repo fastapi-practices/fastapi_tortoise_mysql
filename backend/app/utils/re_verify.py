@@ -4,6 +4,13 @@ import re
 
 
 def search_string(pattern, text) -> bool:
+    """
+    全字段正则匹配
+
+    :param pattern:
+    :param text:
+    :return:
+    """
     result = re.search(pattern, text)
     if result:
         return True
@@ -12,6 +19,13 @@ def search_string(pattern, text) -> bool:
 
 
 def match_string(pattern, text) -> bool:
+    """
+    从字段开头正则匹配
+
+    :param pattern:
+    :param text:
+    :return:
+    """
     result = re.match(pattern, text)
     if result:
         return True

@@ -32,4 +32,4 @@ class Logger:
         return logger
 
 
-log = Logger().log()
+log = Logger.log()

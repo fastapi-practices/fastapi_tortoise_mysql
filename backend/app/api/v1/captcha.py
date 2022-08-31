@@ -16,7 +16,6 @@ async def get_captcha(request: Request):
     img, code = img_captcha()
     uid = get_uuid()
     request.app.state.captcha_uid = uid
-    print(code)
     await redis_client.set(uid, code, settings.CAPTCHA_EXPIRATION_TIME)
     return StreamingResponse(content=img, media_type='image/jpeg')
 

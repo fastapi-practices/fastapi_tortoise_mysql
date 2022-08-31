@@ -5,21 +5,33 @@ from tortoise.contrib.pydantic import pydantic_model_creator
 
 from backend.app.models.user import User
 
-Auth = pydantic_model_creator(User, include=('username', 'password'), name='Auth')
+Auth = pydantic_model_creator(
+    User,
+    include=('username', 'password'),
+    name='Auth'
+)
 
 
 class Auth2(Auth):
     captcha_code: str
 
 
-CreateUser = pydantic_model_creator(User, include=('username', 'password', 'email'), name='CreateUser')
+CreateUser = pydantic_model_creator(
+    User,
+    include=('username', 'password', 'email'),
+    name='CreateUser'
+)
 
 
 class UpdateUser(BaseModel):
     ...
 
 
-GetUserInfo = pydantic_model_creator(User, exclude=('password',), name='GetUserInfo')
+GetUserInfo = pydantic_model_creator(
+    User,
+    exclude=('password',),
+    name='GetUserInfo'
+)
 
 
 class ResetPassword(BaseModel):
