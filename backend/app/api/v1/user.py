@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import os
 from hashlib import sha256
+from typing import Union
 
 import aiofiles
 from email_validator import validate_email, EmailNotValidError
@@ -16,7 +17,7 @@ from backend.app.common.response.response_code import ErrorCode
 from backend.app.common.security import jwt_security
 from backend.app.common.log import log
 from backend.app.common.pagination import Page
-from backend.app.common.response.response_schema import Response200, Response404, ResponseError
+from backend.app.common.response.response_schema import Response200, Response404, ResponseError, ResponseCustomizeError
 from backend.app.core.conf import settings
 from backend.app.core.path_conf import AvatarPath
 from backend.app.crud.crud_user import UserDao
@@ -67,7 +68,8 @@ async def user_login(form_data: OAuth2PasswordRequestForm = Depends()):
 #     )
 
 
-# @user.post('/login', summary='验证码登录', description='必须启用redis', response_model=Token)
+# @user.post('/login', summary='验证码登录', description='必须启用redis',
+#            response_model=Union[ResponseCustomizeError, Token])
 # async def user_login(request: Request, obj: Auth2):
 #     current_user = await UserDao.get_user_by_username(obj.username)
 #     if not current_user:

@@ -10,4 +10,4 @@ class Token(BaseModel):
     msg: Optional[str] = 'Success'
     access_token: str
     token_type: str
-    is_superuser: Optional[bool]
+    is_superuser: Optional[bool] = None

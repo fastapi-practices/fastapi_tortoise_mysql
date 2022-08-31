@@ -3,7 +3,6 @@
 from typing import Optional, Any
 
 from pydantic import BaseModel, Field
-from starlette.responses import JSONResponse
 
 from backend.app.common.response.response_code import ErrorCode
 
@@ -58,15 +57,20 @@ class Response502(__ResponseBase):
     msg: Optional[Any] = Field(default='Bad Gateway')
 
 
-class ResponseError:
+class ResponseCustomizeError(BaseModel):
+    code: int = ...
+    msg: str = ...
+
+
+class __ResponseCustomizeError:
     """
-    返回自定义错误码
+    返回自定义错误状态码和信息
 
     example: ResponseError(ErrorCode.Request_Validation_Error)
     """
 
-    def __init__(self, error: ErrorCode):
-        self.error = error
+    def __call__(self, error: ErrorCode):
+        return ResponseCustomizeError(code=error.code, msg=error.msg)
 
-    def __call__(self, *args, **kwargs):
-        return JSONResponse(status_code=self.error.code, content=self.error.msg)
+
+ResponseError = __ResponseCustomizeError()

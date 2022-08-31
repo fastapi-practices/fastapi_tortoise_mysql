@@ -54,6 +54,8 @@ services:
       - "8000:80"
     container_name: "nginx"
     restart: always
+    depends_on:
+      - app
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - ftm_static:/www/ftm/backend/app/static

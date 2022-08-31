@@ -79,7 +79,7 @@ def register_exception(app: FastAPI):
         """
         return JSONResponse(
             status_code=422,
-            content=jsonable_encoder(Response422(data={'errors': exc.json()})),
+            content=jsonable_encoder(Response422(data={'errors': exc.errors()})),
         )
 
     @app.exception_handler(RequestValidationError)
