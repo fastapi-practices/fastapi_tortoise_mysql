@@ -18,7 +18,12 @@ services:
       ftm_network:
         aliases:
           - ftm_backend_server
-    command: supervisord -c supervisor.conf
+    command:
+      - bash
+      - -c
+      - |
+        wait-for-it -s mysql:3306 -s redis:6379 -t 300
+        supervisord -c supervisor.conf
 
   mysql:
     image: mysql:8.0.29
@@ -34,6 +39,11 @@ services:
       - /var/lib/mysql
     networks:
       - ftm_network
+    command:
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --lower_case_table_names=1
 
   redis:
     image: redis:6.2.7

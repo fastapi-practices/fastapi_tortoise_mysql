@@ -45,13 +45,13 @@ class InitData:
         """
         初始化集
         """
-        log.info('--------------- 初始化数据库连接 ---------------')
+        log.info('⏳ 初始化数据库连接')
         await Tortoise.init(config=db_config)
-        log.success('--------------- 连接数据库成功 ---------------')
+        log.success('✅ 连接数据库成功')
 
-        log.info('--------------- 开始初始化数据 ---------------')
+        log.info('⏳ 开始初始化数据')
         await self.create_superuser()
-        log.info('--------------- 数据初始化完成 ---------------')
+        log.info('✅ 数据初始化完成')
 
 
 if __name__ == '__main__':
