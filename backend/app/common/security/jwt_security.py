@@ -9,7 +9,7 @@ from jose import jwt
 from passlib.context import CryptContext
 from pydantic import ValidationError
 
-from backend.app.common.excpetion.exception_classes import AuthorizationException, TokenException
+from backend.app.common.exception.exception_classes import AuthorizationException, TokenException
 from backend.app.core.conf import settings
 from backend.app.crud.crud_user import UserDao
 from backend.app.models.user import User

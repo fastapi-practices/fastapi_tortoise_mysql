@@ -35,9 +35,9 @@
     pip install -r requirements.txt
     ```
 
-3. 创建数据库 ftm, 选择 utf8mb4 编码
-4. 查看 backend/app/core/conf.py 配置文件, 检查并修改数据库配置信息
-5. 执行数据库迁移
+2. 创建数据库 ftm, 选择 utf8mb4 编码
+3. 查看 backend/app/core/conf.py 配置文件, 检查并修改数据库配置信息
+4. 执行数据库迁移
     ```shell
     cd backend/app/aerich
     
@@ -54,10 +54,10 @@
     aerich upgrade
     ```
 
-6. 安装启动 redis
-7. 查看 backend/app/core/conf.py 配置文件, 检查并修改 redis 配置信息
-8. 执行 backend/app/main.py 文件启动服务
-9. 浏览器访问: http://127.0.0.1:8000/v1/docs
+5. 安装启动 redis
+6. 查看 backend/app/core/conf.py 配置文件, 检查并修改 redis 配置信息
+7. 执行 backend/app/main.py 文件启动服务
+8. 浏览器访问: http://127.0.0.1:8000/v1/docs
 
 ---
 

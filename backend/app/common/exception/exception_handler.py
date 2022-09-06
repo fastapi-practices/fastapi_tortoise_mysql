@@ -6,7 +6,7 @@ from fastapi.exceptions import RequestValidationError
 from pydantic import ValidationError
 from starlette.responses import JSONResponse
 
-from backend.app.common.excpetion.exception_classes import AuthorizationException, TokenException
+from backend.app.common.exception.exception_classes import AuthorizationException, TokenException
 from backend.app.common.response.response_schema import Response401, Response400, Response500, Response422
 
 

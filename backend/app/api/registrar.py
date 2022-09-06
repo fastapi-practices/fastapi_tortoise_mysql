@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi_pagination import add_pagination
 
 from backend.app.api.router import v1
-from backend.app.common.excpetion.exception_handler import register_exception
+from backend.app.common.exception.exception_handler import register_exception
 from backend.app.common.redis import redis_client
 from backend.app.core.conf import settings
 from backend.app.database.mysql_db import register_db
