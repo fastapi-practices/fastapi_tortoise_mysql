@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from tortoise import fields
+from tortoise import Model, fields
 
 from backend.app.database import use_uuid
-from backend.app.models.base import ModelsBase
 
 
-class User(ModelsBase):
+class User(Model):
     """
     用户类
     """
@@ -23,6 +22,8 @@ class User(ModelsBase):
     blog_address = fields.CharField(max_length=128, null=True, description='博客地址')
     introduction = fields.TextField(max_length=16, null=True, description='自我介绍')
     last_login = fields.DatetimeField(null=True, description='上次登录时间')
+    created_time = fields.DatetimeField(auto_now_add=True, description='注册时间')
+    updated_time = fields.DatetimeField(auto_now=True, description='更新时间')
 
     class Meta:
         table = 'user'

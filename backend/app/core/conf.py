@@ -30,6 +30,7 @@ fastapi_tortoise_mysql. 🚀
 
     # DB
     DB_ADD_EXCEPTION_HANDLERS: bool = True  # 线上环境请使用 False
+    DB_AUTO_GENERATE_SCHEMAS: bool = True  # 线上环境请使用 False
     DB_ECHO: bool = False  # 是否显示SQL语句
     DB_HOST: str = '127.0.0.1'
     DB_PORT: int = 3306

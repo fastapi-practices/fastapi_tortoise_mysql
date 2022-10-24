@@ -36,6 +36,6 @@ def register_db(app: FastAPI):
     register_tortoise(
         app,
         config=db_config,
-        generate_schemas=True,
+        generate_schemas=settings.DB_AUTO_GENERATE_SCHEMAS,
         add_exception_handlers=settings.DB_ADD_EXCEPTION_HANDLERS,
     )
