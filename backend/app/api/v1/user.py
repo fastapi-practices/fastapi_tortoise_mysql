@@ -14,10 +14,10 @@ from tortoise import timezone
 
 from backend.app.common.redis import redis_client
 from backend.app.common.response.response_code import ErrorCode
+from backend.app.common.response.response_schema import response_base, response_error, ResponseModel
 from backend.app.common.security import jwt_security
 from backend.app.common.log import log
 from backend.app.common.pagination import Page
-from backend.app.common.response.response_schema import Response200, Response404, ResponseError, ResponseCustomizeError
 from backend.app.core.conf import settings
 from backend.app.core.path_conf import AvatarPath
 from backend.app.crud.crud_user import UserDao
@@ -29,18 +29,16 @@ from backend.app.utils.send_email import send_verification_code_email
 
 user = APIRouter()
 
-headers = {"WWW-Authenticate": "Bearer"}
-
 
 @user.post('/login', summary='表单登录', response_model=Token)
 async def user_login(form_data: OAuth2PasswordRequestForm = Depends()):
     current_user = await UserDao.get_user_by_username(form_data.username)
     if not current_user:
-        raise HTTPException(status_code=404, detail='用户名不存在', headers=headers)
+        raise HTTPException(status_code=404, detail='用户名不存在')
     elif not jwt_security.verity_password(form_data.password, current_user.password):
-        raise HTTPException(status_code=401, detail='密码错误', headers=headers)
+        raise HTTPException(status_code=401, detail='密码错误')
     elif not current_user.is_active:
-        raise HTTPException(status_code=401, detail='用户已被锁定', headers=headers)
+        raise HTTPException(status_code=401, detail='用户已被锁定')
     await UserDao.update_user_login_time(current_user.pk)
     access_token = jwt_security.create_access_token(current_user.pk)
     return Token(
@@ -54,11 +52,11 @@ async def user_login(form_data: OAuth2PasswordRequestForm = Depends()):
 # async def user_login(obj: Auth):
 #     current_user = await UserDao.get_user_by_username(obj.username)
 #     if not current_user:
-#         raise HTTPException(status_code=404, detail='用户名不存在', headers=headers)
+#         raise HTTPException(status_code=404, detail='用户名不存在')
 #     elif not jwt_security.verity_password(obj.password, current_user.password):
-#         raise HTTPException(status_code=401, detail='密码错误', headers=headers)
+#         raise HTTPException(status_code=401, detail='密码错误')
 #     elif not current_user.is_active:
-#         raise HTTPException(status_code=401, detail='用户已被锁定', headers=headers)
+#         raise HTTPException(status_code=401, detail='用户已被锁定')
 #     await UserDao.update_user_login_time(current_user.pk)
 #     access_token = jwt_security.create_access_token(current_user.pk)
 #     return Token(
@@ -66,27 +64,27 @@ async def user_login(form_data: OAuth2PasswordRequestForm = Depends()):
 #         token_type='Bearer',
 #         is_superuser=current_user.is_superuser
 #     )
-
-
+#
+#
 # @user.post('/login', summary='验证码登录', description='必须启用redis',
-#            response_model=Union[ResponseCustomizeError, Token])
+#            response_model=Union[Token, ResponseModel])
 # async def user_login(request: Request, obj: Auth2):
 #     current_user = await UserDao.get_user_by_username(obj.username)
 #     if not current_user:
-#         raise HTTPException(status_code=404, detail='用户名不存在', headers=headers)
+#         raise HTTPException(status_code=404, detail='用户名不存在')
 #     elif not jwt_security.verity_password(obj.password, current_user.password):
-#         raise HTTPException(status_code=401, detail='密码错误', headers=headers)
+#         raise HTTPException(status_code=401, detail='密码错误')
 #     elif not current_user.is_active:
-#         raise HTTPException(status_code=401, detail='用户已被锁定', headers=headers)
+#         raise HTTPException(status_code=401, detail='用户已被锁定')
 #     try:
 #         captcha_code = request.app.state.captcha_uid
 #         redis_code = await redis_client.get(f"{captcha_code}")
 #         if not redis_code:
-#             raise HTTPException(status_code=403, detail='验证码失效，请重新获取', headers=headers)
+#             raise HTTPException(status_code=403, detail='验证码失效，请重新获取')
 #     except AttributeError:
-#         raise HTTPException(status_code=403, detail='验证码失效，请重新获取', headers=headers)
-#     if redis_code.lower() != obj.captcha_code.lower() or redis_code.upper() != obj.captcha_code.upper():
-#         return ResponseError(ErrorCode.IMAGE_CODE_ERROR)
+#         raise HTTPException(status_code=403, detail='验证码失效，请重新获取')
+#     if redis_code.lower() != obj.captcha_code.lower():
+#         return response_error(ErrorCode.IMAGE_CODE_ERROR)
 #     await UserDao.update_user_login_time(current_user.pk)
 #     access_token = jwt_security.create_access_token(current_user.pk)
 #     return Token(
@@ -98,10 +96,10 @@ async def user_login(form_data: OAuth2PasswordRequestForm = Depends()):
 
 @user.post('/logout', summary='登出', dependencies=[Depends(jwt_security.get_current_user)])
 async def user_logout():
-    return Response200()
+    return response_base.response_200()
 
 
-@user.post('/register', summary='注册', response_model=Response200)
+@user.post('/register', summary='注册')
 async def create_user(request: Request, obj: CreateUser):
     username = await UserDao.get_user_by_username(name=obj.username)
     if username:
@@ -117,7 +115,7 @@ async def create_user(request: Request, obj: CreateUser):
     new_user.creator = request.client.host
     await new_user.save()
     data = await GetUserInfo.from_tortoise_orm(new_user)
-    return Response200(data=data)
+    return response_base.response_200(data=data)
 
 
 @user.post('/password/reset/vcode', summary='获取密码重置验证码', description='可以通过用户名或者邮箱重置密码')
@@ -138,7 +136,7 @@ async def password_reset_captcha(username_or_email: str, response: Response):
             raise HTTPException(status_code=500, detail=f'内部错误，无法发送验证码 {e}')
         current_user_email = await UserDao.get_email_by_username(current_user.username)
         await send_verification_code_email(current_user_email, code)
-        return Response200()
+        return response_base.response_200()
     # 输入为邮箱时
     else:
         try:
@@ -159,7 +157,7 @@ async def password_reset_captcha(username_or_email: str, response: Response):
             log.error('无法发送验证码 {}'.format(e))
             raise HTTPException(status_code=500, detail=f'内部错误，无法发送验证码 {e}')
         await send_verification_code_email(username_or_email, code)
-        return Response200()
+        return response_base.response_200()
 
 
 @user.post('/password/reset', summary='密码重置请求')
@@ -178,12 +176,12 @@ async def password_reset(obj: ResetPassword, request: Request, response: Respons
         raise HTTPException(status_code=500, detail='内部错误，密码重置失败')
     response.delete_cookie(key='fastapi_reset_pwd_code')
     response.delete_cookie(key='fastapi_reset_pwd_username')
-    return Response200()
+    return response_base.response_200()
 
 
 @user.get('/password/reset/done', summary='重置密码完成')
 def password_reset_done():
-    return Response200()
+    return response_base.response_200()
 
 
 @user.put('/me', summary='更新用户信息')
@@ -241,7 +239,7 @@ async def update_userinfo(
     data = await GetUserInfo.from_tortoise_orm(new_user)
     if isinstance(_file_name, str):
         data.avatar = cut_path(AvatarPath + _file_name)[1]
-    return Response200(data=data)
+    return response_base.response_200(data=data)
 
 
 @user.delete('/me/avatar', summary='删除头像文件')
@@ -253,9 +251,9 @@ async def delete_avatar(current_user=Depends(jwt_security.get_current_user)):
         except Exception as e:
             log.warning('用户 {} 删除头像文件 {} 失败\n{}', current_user.username, current_filename, e)
     else:
-        return Response404(msg='未上传头像，请上传头像后再执行此操作')
+        return response_base.response_404(msg='未上传头像，请上传头像后再执行此操作')
     await UserDao.delete_avatar(current_user.id)
-    return Response200()
+    return response_base.response_200()
 
 
 @user.get('/me', summary='获取用户信息', response_model=GetUserInfo)
@@ -274,8 +272,8 @@ async def super_set(pk: int):
     if await UserDao.get_user_by_id(pk):
         await UserDao.super_set(pk)
         status = await UserDao.get_user_super_status(pk)
-        return Response200(data=status)
-    return Response404(msg=f'用户 {pk} 不存在')
+        return response_base.response_200(data=status)
+    return response_base.response_404(msg=f'用户 {pk} 不存在')
 
 
 @user.post('/{pk}/action', summary='修改用户状态', dependencies=[Depends(jwt_security.get_current_is_superuser)])
@@ -283,8 +281,8 @@ async def active_set(pk: int):
     if await UserDao.get_user_by_id(pk):
         await UserDao.active_set(pk)
         status = await UserDao.get_user_active_status(pk)
-        return Response200(data=status)
-    return Response404(msg=f'用户 {pk} 不存在')
+        return response_base.response_200(data=status)
+    return response_base.response_404(msg=f'用户 {pk} 不存在')
 
 
 @user.delete('/me', summary='用户注销', description='用户注销 != 用户退出，注销之后用户将从数据库删除')
@@ -297,4 +295,4 @@ async def delete_user(current_user=Depends(jwt_security.get_current_user)):
         log.warning(f'删除用户 {current_user.username} 头像文件:{current_filename} 失败\n{e}')
     finally:
         await UserDao.delete_user(current_user.id)
-        return Response200()
+        return response_base.response_404()
