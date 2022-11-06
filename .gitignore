@@ -83,3 +83,5 @@ venv.bak/
 
 # log
 backend/app/log/
+
+backend/app/aerich/migrations/

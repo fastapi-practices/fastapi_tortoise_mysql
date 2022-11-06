@@ -51,7 +51,7 @@ fastapi_tortoise_mysql. 🚀
 
     # Token
     TOKEN_ALGORITHM: str = 'HS256'
-    TOKEN_SECRET_KEY: str = '0ou59yzj-QwX8JT8Mq8o2rIOvxpwtVWH3aFH2-QLo7c'  # 密钥生成方法：print(secrets.token_urlsafe(32)))
+    TOKEN_SECRET_KEY: str = '0ou59yzj-QwX8JT8Mq8o2rIOvxpwtVWH3aFH2-QLo7c'  # 密钥 secrets.token_urlsafe(32))
     TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 3  # 单位：m
 
     # Email
@@ -68,7 +68,7 @@ fastapi_tortoise_mysql. 🚀
     # 中间件
     MIDDLEWARE_CORS: bool = True
     MIDDLEWARE_GZIP: bool = True
-    MIDDLEWARE_ACCESS: bool = True
+    MIDDLEWARE_ACCESS: bool = False
 
 
 @lru_cache

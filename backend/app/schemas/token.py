@@ -7,7 +7,7 @@ from pydantic import BaseModel
 
 class Token(BaseModel):
     code: int = 200
-    msg: Optional[str] = 'Success'
+    msg: str = 'Success'
     access_token: str
-    token_type: str
+    token_type: str = 'Bearer'
     is_superuser: Optional[bool] = None

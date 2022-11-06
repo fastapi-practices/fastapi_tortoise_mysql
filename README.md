@@ -1,8 +1,6 @@
 # FastAPI Project Demo
 
-###### 声明：此仓库仅做为 FastAPI 入门级参考
-
-📢 开箱即用, 所有接口采用 restful 风格
+###### 声明：此仓库仅做为 FastAPI 入门级参考, 开箱即用, 所有接口采用 restful 风格
 
 ## 技术栈
 
@@ -16,15 +14,27 @@
 
 ## 下载
 
-1. 克隆
+### 1. 克隆仓库
 
-    ```shell
-    git clone https://gitee.com/wu_cl/fastapi_tortoise_mysql.git
-    ```
+ ```shell
+ git clone https://gitee.com/wu_cl/fastapi_tortoise_mysql.git
+ ```
 
-2. [点我下载压缩包](https://gitee.com/wu_cl/fastapi_tortoise_mysql/repository/archive/master.zip)
+### 2. 使用 CLI（推荐）
 
-## 使用
+pip 安装:
+
+```shell
+pip install fastapi-ccli
+```
+
+跳转查看使用说明:
+
+- [PyPI](https://pypi.org/project/fastapi-ccli)
+- [Gitee](https://gitee.com/wu_cl/fastapi_ccli)
+- [GitHub](https://github.com/wu-clan/fastapi_ccli)
+
+## 安装使用
 
 > ⚠️: 此过程请格外注意端口占用情况, 特别是 8000, 3306, 6379...
 
@@ -41,11 +51,11 @@
     ```shell
     cd backend/app/aerich
     
-    # demo中直接省略这两步
+    # demo中可省略两步
     # aerich init -t env.TORTOISE_ORM  
-    # aerich init-db
-    
-    # 执行此命令
+   
+    aerich init-db
+
     aerich upgrade
     
     # 当更新数据库 model 后，执行下面两个命令进行迁移

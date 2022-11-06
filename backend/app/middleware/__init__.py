@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from backend.app.core.conf import settings
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 
+from backend.app.core.conf import settings
 from backend.app.middleware.access_middle import AccessMiddleware
 
 

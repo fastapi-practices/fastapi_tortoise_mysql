@@ -9,7 +9,7 @@ from jose import jwt
 from passlib.context import CryptContext
 from pydantic import ValidationError
 
-from backend.app.common.exception.exception_classes import AuthorizationException, TokenException
+from backend.app.common.exception.errors import TokenError, AuthorizationError
 from backend.app.core.conf import settings
 from backend.app.crud.crud_user import UserDao
 from backend.app.models.user import User
@@ -17,8 +17,6 @@ from backend.app.models.user import User
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')  # 密码加密
 
 oauth2_schema = OAuth2PasswordBearer(tokenUrl='/v1/users/login')  # 指明客户端请求token的地址
-
-headers = {"WWW-Authenticate": "Bearer"}  # 异常返回规范
 
 
 def get_hash_password(password: str) -> str:
@@ -71,20 +69,21 @@ async def get_current_user(token: str = Depends(oauth2_schema)) -> User:
         payload = jwt.decode(token, settings.TOKEN_SECRET_KEY, algorithms=[settings.TOKEN_ALGORITHM])
         user_id = payload.get('sub')
         if not user_id:
-            raise TokenException
+            raise TokenError
     except (jwt.JWTError, ValidationError):
-        raise TokenException
+        raise TokenError
     user = await UserDao.get_user_by_id(user_id)
     return user
 
 
-async def get_current_is_superuser(user: User = Depends(get_current_user)) -> User:
+async def get_current_is_superuser(user: User = Depends(get_current_user)):
     """
     验证当前用户是否为超级用户
 
     :param user:
     :return:
     """
-    if not user.is_superuser:
-        raise AuthorizationException
-    return user
+    is_superuser = user.is_superuser
+    if not is_superuser:
+        raise AuthorizationError
+    return is_superuser

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+
 from aioredis import Redis, TimeoutError, AuthenticationError
 
 from backend.app.common.log import log

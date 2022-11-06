@@ -32,18 +32,14 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def create(self, obj_in: CreateSchemaType) -> ModelType:
         return await self.model.create(**obj_in.dict(exclude_unset=True))
 
-    async def update_one(self, pk: int, obj_in: Union[UpdateSchemaType, Dict[str, Any]]) -> ModelType:
-        obj = await self.get(pk)
+    async def update(self, pk: int, obj_in: Union[UpdateSchemaType, Dict[str, Any]]) -> int:
         if isinstance(obj_in, dict):
             update_data = obj_in
         else:
             update_data = obj_in.dict()
-        for attr, value in update_data.items():
-            setattr(obj, attr, value)
-        await obj.save()
-        return obj
+        count = await self.model.filter(id=pk).update(**update_data)
+        return count
 
-    async def delete_one(self, pk: int) -> ModelType:
-        obj = await self.get(pk)
-        await obj.delete()
-        return obj
+    async def delete(self, pk: int) -> int:
+        count = await self.model.filter(id=pk).delete()
+        return count

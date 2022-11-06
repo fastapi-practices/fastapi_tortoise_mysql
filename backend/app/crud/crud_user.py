@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from tortoise import timezone
 
-from backend.app.common.security import jwt_security
+from backend.app.api import jwt
 from backend.app.crud.base import CRUDBase
 from backend.app.models.user import User
 from backend.app.schemas.user import CreateUser, UpdateUser
@@ -10,7 +10,7 @@ from backend.app.schemas.user import CreateUser, UpdateUser
 
 class CRUDUser(CRUDBase[User, CreateUser, UpdateUser]):
     async def get_user_by_id(self, pk: int) -> User:
-        return await super().get(pk)
+        return await self.get(pk)
 
     async def get_user_by_username(self, name: str) -> User:
         return await self.model.filter(username=name).first()
@@ -22,9 +22,9 @@ class CRUDUser(CRUDBase[User, CreateUser, UpdateUser]):
         return await self.model.filter(email=email).exists()
 
     async def register_user(self, user: CreateUser) -> User:
-        user.password = jwt_security.get_hash_password(user.password)
-        user_obj = await super().create(user)
-        return user_obj
+        user.password = jwt.get_hash_password(user.password)
+        user = await self.create(user)
+        return user
 
     async def get_email_by_username(self, username: str) -> str:
         user = await self.model.filter(username=username).first()
@@ -34,60 +34,45 @@ class CRUDUser(CRUDBase[User, CreateUser, UpdateUser]):
         user = await self.model.filter(email=email).first()
         return user.username
 
-    async def reset_password(self, username: str, password: str) -> int:
-        new_pwd = jwt_security.get_hash_password(password)
-        result = await self.model.filter(username=username).update(password=new_pwd)
-        return result
-
-    async def update_userinfo(self, current_user: User, username: str, email: str, mobile_number: str, wechat: str,
-                              qq: str, blog_address: str, introduction: str, avatar: str) -> User:
-        new_info = {
-            "username": username,
-            "email": email,
-            "mobile_number": mobile_number,
-            "wechat": wechat,
-            "qq": qq,
-            "blog_address": blog_address,
-            "introduction": introduction,
-            "avatar": avatar
-        }
-        new_user = await super().update_one(current_user.pk, new_info)
-        return new_user
-
-    async def get_avatar_by_pk(self, pk: int):
-        user = await super().get(pk)
+    async def get_avatar_by_username(self, username: str) -> str:
+        user = await self.get_user_by_username(username)
         return user.avatar
 
-    async def delete_avatar(self, pk: int) -> None:
-        await self.model.filter(id=pk).update(avatar=None)
-        return
+    async def reset_password(self, username: str, password: str) -> int:
+        new_pwd = jwt.get_hash_password(password)
+        return await self.model.filter(username=username).update(password=new_pwd)
 
-    async def super_set(self, pk: int) -> None:
+    async def update_userinfo(self, current_user: User, obj_in: UpdateUser) -> int:
+        return await self.update(current_user.pk, obj_in)
+
+    async def update_avatar(self, current_user: User, avatar: str):
+        return await self.update(current_user.pk, {'avatar': avatar})
+
+    async def get_avatar_by_pk(self, pk: int):
+        user = await self.get(pk)
+        return user.avatar
+
+    async def delete_avatar(self, pk: int) -> int:
+        return await self.model.filter(id=pk).update(avatar=None)
+
+    async def super_set(self, pk: int) -> int:
         super_status = await self.get_user_super_status(pk)
-        if super_status:
-            await self.model.filter(id=pk).update(is_superuser=False)
-        else:
-            await self.model.filter(id=pk).update(is_superuser=True)
-        return
+        return await self.model.filter(id=pk).update(is_superuser=False if super_status else True)
 
     async def get_user_super_status(self, pk: int) -> bool:
-        user = await super().get(pk)
+        user = await self.get(pk)
         return user.is_superuser
 
-    async def active_set(self, pk: int) -> None:
+    async def active_set(self, pk: int) -> int:
         active_status = await self.get_user_active_status(pk)
-        if active_status:
-            await self.model.filter(id=pk).update(is_active=False)
-        else:
-            await self.model.filter(id=pk).update(is_active=True)
-        return
+        return await self.model.filter(id=pk).update(is_active=False if active_status else True)
 
     async def get_user_active_status(self, pk: int) -> bool:
-        user = await super().get(pk)
+        user = await self.get(pk)
         return user.is_active
 
-    async def delete_user(self, pk: int) -> User:
-        return await super().delete_one(pk)
+    async def delete_user(self, pk: int) -> int:
+        return await self.delete(pk)
 
 
 UserDao = CRUDUser(User)

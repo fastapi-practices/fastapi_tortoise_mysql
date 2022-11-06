@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 from email_validator import validate_email, EmailNotValidError
 from tortoise import Tortoise, run_async
 
-from backend.app.common.security.jwt_security import get_hash_password
+from backend.app.api.jwt import get_hash_password
 from backend.app.common.log import log
-from backend.app.database.mysql_db import db_config
+from backend.app.database.db_mysql import db_config
 from backend.app.models.user import User
 
 

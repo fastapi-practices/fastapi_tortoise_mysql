@@ -9,6 +9,7 @@ class User(Model):
     """
     用户类
     """
+    id = fields.BigIntField(pk=True, index=True, description='主键id')
     uid = fields.CharField(max_length=64, default=use_uuid, unique=True, description="用户UID")
     username = fields.CharField(max_length=32, unique=True, description='用户名')
     password = fields.CharField(max_length=256, description='密码')

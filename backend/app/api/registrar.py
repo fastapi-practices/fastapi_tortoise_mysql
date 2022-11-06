@@ -7,7 +7,7 @@ from backend.app.api.router import v1
 from backend.app.common.exception.exception_handler import register_exception
 from backend.app.common.redis import redis_client
 from backend.app.core.conf import settings
-from backend.app.database.mysql_db import register_db
+from backend.app.database.db_mysql import register_db
 from backend.app.middleware import register_middleware
 
 
@@ -53,9 +53,7 @@ def register_router(app: FastAPI):
     :param app: FastAPI
     :return:
     """
-    app.include_router(
-        v1,
-    )
+    app.include_router(v1)
 
 
 def register_static_file(app: FastAPI):
@@ -89,7 +87,7 @@ def register_init(app: FastAPI):
     @app.on_event("shutdown")
     async def shutdown_event():
         # 关闭redis连接
-        await redis_client.init_redis_connect().close()
+        await redis_client.close()
 
 
 def register_page(app: FastAPI):

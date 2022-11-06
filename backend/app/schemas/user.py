@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from typing import Optional
+
 from pydantic import BaseModel
 from tortoise.contrib.pydantic import pydantic_model_creator
 
@@ -24,7 +26,13 @@ CreateUser = pydantic_model_creator(
 
 
 class UpdateUser(BaseModel):
-    ...
+    username: str
+    email: str
+    mobile_number: Optional[str] = None
+    wechat: Optional[str] = None
+    qq: Optional[str] = None
+    blog_address: Optional[str] = None
+    introduction: Optional[str] = None
 
 
 GetUserInfo = pydantic_model_creator(

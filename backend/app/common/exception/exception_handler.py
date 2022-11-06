@@ -2,20 +2,19 @@
 # -*- coding: utf-8 -*-
 import json
 
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.encoders import jsonable_encoder
-from fastapi.exceptions import RequestValidationError
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError, HTTPException
 from pydantic import ValidationError
 from starlette.responses import JSONResponse
 
-from backend.app.common.exception.exception_classes import AuthorizationException, TokenException
+from backend.app.common.exception.errors import BaseExceptionMixin
 from backend.app.common.response.response_schema import response_base
 from backend.app.core.conf import settings
 
 
 def register_exception(app: FastAPI):
     @app.exception_handler(HTTPException)
-    def http_exception_handler(request: Request, exc: HTTPException):
+    def http_exception_handler(request: Request, exc: HTTPException):  # noqa
         """
         全局HTTP异常处理
 
@@ -25,12 +24,12 @@ def register_exception(app: FastAPI):
         """
         return JSONResponse(
             status_code=exc.status_code,
-            content=jsonable_encoder(response_base.fail(code=exc.status_code, msg=exc.detail)),
+            content=response_base.fail(code=exc.status_code, msg=exc.detail).dict(),
             headers=exc.headers
         )
 
     @app.exception_handler(Exception)
-    def all_exception_handler(request: Request, exc):
+    def all_exception_handler(request: Request, exc):  # noqa
         """
         全局异常处理
 
@@ -42,7 +41,6 @@ def register_exception(app: FastAPI):
         if isinstance(exc, (ValidationError, RequestValidationError)):
             message = ""
             data = {}
-            print(exc.raw_errors)
             for raw_error in exc.raw_errors:
                 if isinstance(raw_error.exc, ValidationError):
                     exc = raw_error.exc
@@ -59,29 +57,26 @@ def register_exception(app: FastAPI):
                     message += 'json解析失败'
             return JSONResponse(
                 status_code=422,
-                content=jsonable_encoder(
-                    response_base.response_422(
-                        msg='请求参数非法' if len(message) == 0 else f"请求参数非法, {message[:-1]}",
-                        data={'errors': exc.errors()} if message == "" and settings.UVICORN_RELOAD is True else None
-                    )
-                )
+                content=response_base.fail(
+                    msg='请求参数非法' if len(message) == 0 else f"请求参数非法, {message[:-1]}",
+                    data={'errors': exc.errors()} if message == "" and settings.UVICORN_RELOAD is True else None
+                ).dict()
             )
 
         # 自定义
-        if isinstance(exc, AuthorizationException):
+        if isinstance(exc, BaseExceptionMixin):
             return JSONResponse(
-                status_code=401,
-                content=jsonable_encoder(response_base.fail(msg=exc.err))
-            )
-
-        if isinstance(exc, TokenException):
-            return JSONResponse(
-                status_code=401,
-                content=jsonable_encoder(response_base.fail(msg=exc.err))
+                status_code=exc.code,
+                content=response_base.fail(
+                    code=exc.code,
+                    msg=str(exc.msg),
+                    data=exc.data if exc.data else None
+                ).dict()
             )
 
         else:
             return JSONResponse(
                 status_code=500,
-                content=jsonable_encoder(response_base.response_500(msg=str(exc)))
+                content=response_base.fail(code=500, msg=str(exc)).dict() if settings.UVICORN_RELOAD else
+                response_base.fail(code=500, msg='Internal Server Error').dict()
             )

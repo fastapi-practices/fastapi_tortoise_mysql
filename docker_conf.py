@@ -25,6 +25,7 @@ fastapi_tortoise_mysql. 🚀
 
     # DB
     DB_ADD_EXCEPTION_HANDLERS: bool = True  # 线上环境请使用 False
+    DB_AUTO_GENERATE_SCHEMAS: bool = True  # 线上环境请使用 False
     DB_ECHO: bool = False  # 是否显示SQL语句
     DB_HOST: str = 'mysql'
     DB_PORT: int = 3306
@@ -45,7 +46,7 @@ fastapi_tortoise_mysql. 🚀
 
     # Token
     TOKEN_ALGORITHM: str = 'HS256'
-    TOKEN_SECRET_KEY: str = '0ou59yzj-QwX8JT8Mq8o2rIOvxpwtVWH3aFH2-QLo7c'  # 密钥生成方法：print(secrets.token_urlsafe(32)))
+    TOKEN_SECRET_KEY: str = '0ou59yzj-QwX8JT8Mq8o2rIOvxpwtVWH3aFH2-QLo7c'
     TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 3  # 单位：m
 
     # Email
@@ -62,7 +63,7 @@ fastapi_tortoise_mysql. 🚀
     # 中间件
     MIDDLEWARE_CORS: bool = True
     MIDDLEWARE_GZIP: bool = True
-    MIDDLEWARE_ACCESS: bool = True
+    MIDDLEWARE_ACCESS: bool = False
 
 
 @lru_cache
