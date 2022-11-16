@@ -29,14 +29,23 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     async def get_values_list(self, pk: int, *fields: str, flat: bool = False) -> Union[List[Any], tuple]:
         return await self.model.get(id=pk).values_list(*fields, flat=flat)
 
-    async def create(self, obj_in: CreateSchemaType) -> ModelType:
-        return await self.model.create(**obj_in.dict(exclude_unset=True))
+    async def create(self, obj_in: CreateSchemaType, user_id: Optional[int] = None) -> ModelType:
+        if user_id:
+            model = self.model(**obj_in.dict(), create_user=user_id)
+            await model.save()
+        else:
+            model = await self.model.create(**obj_in.dict())
+        return model
 
-    async def update(self, pk: int, obj_in: Union[UpdateSchemaType, Dict[str, Any]]) -> int:
+    async def update(
+            self, pk: int, obj_in: Union[UpdateSchemaType, Dict[str, Any]], user_id: Optional[int] = None
+    ) -> int:
         if isinstance(obj_in, dict):
             update_data = obj_in
         else:
             update_data = obj_in.dict()
+        if user_id:
+            update_data.update({'update_user': user_id})
         count = await self.model.filter(id=pk).update(**update_data)
         return count
 
