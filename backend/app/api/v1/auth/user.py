@@ -104,7 +104,7 @@ async def get_all_users():
 async def super_set(pk: int):
     count = await user_service.update_permission(pk)
     if count > 0:
-        return response_base.response_200(msg=f'修改超级权限成功')
+        return response_base.response_200(msg='修改超级权限成功')
     return response_base.fail()
 
 
@@ -112,7 +112,7 @@ async def super_set(pk: int):
 async def active_set(pk: int):
     count = await user_service.update_active(pk)
     if count > 0:
-        return response_base.response_200(msg=f'修改用户状态成功')
+        return response_base.response_200(msg='修改用户状态成功')
     return response_base.fail()
 
 
