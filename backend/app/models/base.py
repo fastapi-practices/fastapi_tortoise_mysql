@@ -7,9 +7,8 @@ class Base(Model):
     """
     基本模型
     """
-    id = fields.BigIntField(pk=True, index=True, description='主键id')
-    create_user = fields.BigIntField(null=True, verbose_name='创建者')
-    update_user = fields.BigIntField(null=False, verbose_name='修改者')
+    create_user = fields.BigIntField(null=False, verbose_name='创建者')
+    update_user = fields.BigIntField(null=True, verbose_name='修改者')
     created_time = fields.DatetimeField(auto_now_add=True, verbose_name='创建时间')
     updated_time = fields.DatetimeField(auto_now=True, verbose_name='更新时间')
 
