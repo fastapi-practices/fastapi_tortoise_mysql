@@ -44,7 +44,7 @@ async def create_user(obj: CreateUser):
     return response_base.response_200(msg='用户注册成功')
 
 
-@user.post('/password/reset/vcode', summary='获取密码重置验证码', description='可以通过用户名或者邮箱重置密码')
+@user.post('/password/reset/code', summary='获取密码重置验证码', description='可以通过用户名或者邮箱重置密码')
 async def password_reset_captcha(username_or_email: str, response: Response):
     await user_service.get_pwd_rest_captcha(username_or_email=username_or_email, response=response)
     return response_base.response_200(msg='验证码发送成功')
