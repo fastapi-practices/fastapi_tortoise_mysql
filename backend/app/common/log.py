@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from __future__ import annotations
+
 import os
 
+import loguru
 from loguru import logger
 
 from backend.app.core import path_conf
@@ -10,7 +13,7 @@ from backend.app.core import path_conf
 class Logger:
 
     @staticmethod
-    def log() -> logger:
+    def log() -> loguru.Logger:
         if not os.path.exists(path_conf.LogPath):
             os.mkdir(path_conf.LogPath)
 
