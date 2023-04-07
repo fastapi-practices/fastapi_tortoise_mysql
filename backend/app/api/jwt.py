@@ -8,6 +8,7 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 from passlib.context import CryptContext
 from pydantic import ValidationError
+from typing_extensions import Annotated
 
 from backend.app.common.exception.errors import TokenError, AuthorizationError
 from backend.app.core.conf import settings
@@ -89,3 +90,11 @@ async def get_current_is_superuser(user: User = Depends(get_current_user)):
     if not is_superuser:
         raise AuthorizationError
     return is_superuser
+
+
+# 用户依赖注入
+CurrentUser = Annotated[User, Depends(get_current_user)]
+CurrentSuperUser = Annotated[bool, Depends(get_current_is_superuser)]
+# 权限依赖注入
+DependsUser = Depends(get_current_user)
+DependsSuperUser = Depends(get_current_is_superuser)
