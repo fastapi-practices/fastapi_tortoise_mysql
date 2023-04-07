@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 from fastapi import APIRouter
 
-from backend.app.api.v1.auth.user import user
-from backend.app.api.v1.verify.captcha import captcha
+from backend.app.api.v1.user import user
+from backend.app.api.v1.captcha import captcha
 
 v1 = APIRouter(prefix='/v1')
 
