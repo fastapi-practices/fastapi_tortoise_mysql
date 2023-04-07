@@ -85,4 +85,4 @@ class CRUDUser(CRUDBase[User, CreateUser, UpdateUser]):
         return await self.delete(pk)
 
 
-UserDao = CRUDUser(User)
+UserDao: CRUDUser = CRUDUser(User)
