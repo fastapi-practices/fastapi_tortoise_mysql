@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi_pagination import add_pagination
 
@@ -11,22 +13,21 @@ from backend.app.database.db_mysql import register_db
 from backend.app.middleware import register_middleware
 
 
-# ISSUES: [#1371](https://github.com/tortoise/tortoise-orm/issues/1371)
-# @asynccontextmanager
-# async def register_init(app: FastAPI):
-#     """
-#     初始化连接
-#
-#     :param app: FastAPI
-#     :return:
-#     """
-#     # 连接redis
-#     await redis_client.init_redis_connect()
-#
-#     yield
-#
-#     # 关闭redis连接
-#     await redis_client.close()
+@asynccontextmanager
+async def register_init(app: FastAPI):
+    """
+    初始化连接
+
+    :param app: FastAPI
+    :return:
+    """
+    # 连接redis
+    await redis_client.init_redis_connect()
+
+    yield
+
+    # 关闭redis连接
+    await redis_client.close()
 
 
 def register_app():
@@ -38,7 +39,7 @@ def register_app():
         docs_url=settings.DOCS_URL,
         redoc_url=settings.REDOCS_URL,
         openapi_url=settings.OPENAPI_URL,
-        # lifespan=register_init
+        lifespan=register_init
     )
 
     # 注册静态文件
@@ -88,25 +89,6 @@ def register_static_file(app: FastAPI):
         if not os.path.exists("./static"):
             os.mkdir("./static")
         app.mount("/static", StaticFiles(directory="static"), name="static")
-
-
-def register_init(app: FastAPI):
-    """
-    初始化连接
-
-    :param app: FastAPI
-    :return:
-    """
-
-    @app.on_event("startup")
-    async def startup_event():
-        # 连接redis
-        await redis_client.init_redis_connect()
-
-    @app.on_event("shutdown")
-    async def shutdown_event():
-        # 关闭redis连接
-        await redis_client.close()
 
 
 def register_page(app: FastAPI):
