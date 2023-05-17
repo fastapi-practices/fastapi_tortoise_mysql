@@ -1,5 +1,5 @@
 fastapi==0.95.0
-starlette==0.26.1
+starlette==0.27.0
 tortoise-orm[asyncmy]==0.19.3
 aerich==0.7.1
 email-validator==1.1.3
