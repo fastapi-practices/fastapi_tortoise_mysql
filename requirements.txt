@@ -12,7 +12,7 @@ uvicorn[standard]==0.13.4
 path==15.1.2
 python-jose==3.3.0
 fastapi-pagination==0.9.1
-cryptography==41.0.0
+cryptography==41.0.3
 bcrypt==3.2.2
 aioredis==2.0.1
 fast_captcha==0.1.3
