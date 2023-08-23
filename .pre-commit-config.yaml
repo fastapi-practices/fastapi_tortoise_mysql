@@ -1,0 +1,25 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-added-large-files
+      - id: end-of-file-fixer
+      - id: requirements-txt-fixer
+      - id: check-yaml
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.0.285
+    hooks:
+      - id: ruff
+        args:
+          - '--config'
+          - '.ruff.toml'
+          - '--fix'
+  - repo: https://github.com/psf/black
+    rev: 23.3.0
+    hooks:
+      - id: black
+        language_version: python3.10
+        args:
+          - '--skip-string-normalization'
+          - '--line-length'
+          - '120'
