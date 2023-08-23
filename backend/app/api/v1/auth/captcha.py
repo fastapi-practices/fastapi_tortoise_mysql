@@ -13,8 +13,7 @@ from backend.app.utils.generate_string import get_uuid_str
 router = APIRouter()
 
 
-@router.get('/captcha', summary='获取验证码',
-             dependencies=[Depends(RateLimiter(times=5, seconds=10))])
+@router.get('/captcha', summary='获取验证码', dependencies=[Depends(RateLimiter(times=5, seconds=10))])
 async def get_captcha(request: Request):
     img, code = await run_in_threadpool(img_captcha)
     uuid = get_uuid_str()

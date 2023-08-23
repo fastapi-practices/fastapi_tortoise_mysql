@@ -37,10 +37,7 @@ async def password_reset_done():
 @router.get('/{username}', summary='查看用户信息', dependencies=[DependsJwtUser])
 async def get_user_info(username: str):
     current_user = await UserService.get_user_info(username)
-    return await response_base.success(
-        data=current_user,
-        exclude={'password'}
-    )
+    return await response_base.success(data=current_user, exclude={'password'})
 
 
 @router.put('/{username}', summary='更新用户信息')
@@ -90,8 +87,12 @@ async def status_set(pk: int):
     return await response_base.fail()
 
 
-@router.delete('/{username}', summary='用户注销', description='用户注销 != 用户退出，注销之后用户将从数据库删除',
-               dependencies=[DependsJwtUser])
+@router.delete(
+    '/{username}',
+    summary='用户注销',
+    description='用户注销 != 用户退出，注销之后用户将从数据库删除',
+    dependencies=[DependsJwtUser],
+)
 async def delete_user(username: str, current_user: CurrentUser):
     count = await UserService.delete(username=username, current_user=current_user)
     if count > 0:

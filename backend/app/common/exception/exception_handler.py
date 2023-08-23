@@ -15,8 +15,12 @@ from backend.app.common.exception.errors import BaseExceptionMixin
 from backend.app.common.log import log
 from backend.app.common.response.response_schema import response_base
 from backend.app.core.conf import settings
-from backend.app.schemas.base import convert_validation_errors, CUSTOM_VALIDATION_ERROR_MESSAGES, convert_usage_errors, \
-    CUSTOM_USAGE_ERROR_MESSAGES
+from backend.app.schemas.base import (
+    convert_validation_errors,
+    CUSTOM_VALIDATION_ERROR_MESSAGES,
+    convert_usage_errors,
+    CUSTOM_USAGE_ERROR_MESSAGES,
+)
 
 
 @sync_to_async
@@ -120,8 +124,9 @@ def register_exception(app: FastAPI):
         """
         return JSONResponse(
             status_code=500,
-            content=await response_base.fail(code=exc.code,
-                                             msg=await convert_usage_errors(exc, CUSTOM_USAGE_ERROR_MESSAGES))
+            content=await response_base.fail(
+                code=exc.code, msg=await convert_usage_errors(exc, CUSTOM_USAGE_ERROR_MESSAGES)
+            ),
         )
 
     @app.exception_handler(Exception)

@@ -5,7 +5,7 @@ from fastapi.exceptions import ValidationException
 from pydantic import BaseModel, ConfigDict, ValidationError, PydanticUserError
 from pydantic_core import ErrorDetails
 
-# 自定义验证错误信息不包含验证预期内容，如果想添加预期内容，只需在自定义错误信息中添加 {xxx(预期内容字段)} 即可，预期内容字段参考以下链接
+# 自定义验证错误信息不包含验证预期内容，如果想添加预期内容，只需在自定义错误信息中添加 {xxx(预期内容字段)} 即可，预期内容字段参考以下链接  # noqa: E501
 # https://github.com/pydantic/pydantic-core/blob/a5cb7382643415b716b1a7a5392914e50f726528/tests/test_errors.py#L266
 # 替换预期内容字段方式，参考以下链接
 # https://github.com/pydantic/pydantic/blob/caa78016433ec9b16a973f92f187a7b6bfde6cb5/docs/errors/errors.md?plain=1#L232
@@ -142,24 +142,20 @@ CUSTOM_USAGE_ERROR_MESSAGES = {
 
 @sync_to_async
 def convert_validation_errors(
-        e: ValidationError | ValidationException, custom_messages: dict[str, str]
+    e: ValidationError | ValidationException, custom_messages: dict[str, str]
 ) -> list[ErrorDetails]:
     new_errors: list[ErrorDetails] = []
     for error in e.errors():
         custom_message = custom_messages.get(error['type'])
         if custom_message:
             ctx = error.get('ctx')
-            error['msg'] = (
-                custom_message.format(**ctx) if ctx else custom_message
-            )
+            error['msg'] = custom_message.format(**ctx) if ctx else custom_message
         new_errors.append(error)
     return new_errors
 
 
 @sync_to_async
-def convert_usage_errors(
-        e: PydanticUserError, custom_messages: dict[str, str]
-) -> str:
+def convert_usage_errors(e: PydanticUserError, custom_messages: dict[str, str]) -> str:
     custom_message = custom_messages.get(e.code)
     if custom_message:
         return custom_message

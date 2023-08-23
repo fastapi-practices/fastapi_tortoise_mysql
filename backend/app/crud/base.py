@@ -40,9 +40,7 @@ class CRUDBase(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             model = await self.model.create(**obj_in.model_dump())
         return model
 
-    async def update(
-            self, pk: int, obj_in: UpdateSchemaType | Dict[str, Any], user_id: int | None = None
-    ) -> int:
+    async def update(self, pk: int, obj_in: UpdateSchemaType | Dict[str, Any], user_id: int | None = None) -> int:
         if isinstance(obj_in, dict):
             update_data = obj_in
         else:

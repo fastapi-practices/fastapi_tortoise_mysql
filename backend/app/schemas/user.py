@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import datetime
-from typing import Optional
 
 from email_validator import validate_email, EmailNotValidError
 from pydantic import UUID4, EmailStr, field_validator, ConfigDict
@@ -36,7 +35,7 @@ class CreateUser(SchemaBase):
 class UpdateUser(SchemaBase):
     username: str
     email: str
-    phone: Optional[str] = None
+    phone: str | None = None
 
     @field_validator('email')
     @classmethod
@@ -57,10 +56,10 @@ class GetUserInfo(SchemaBase):
     email: EmailStr
     status: int
     is_superuser: bool
-    avatar: Optional[str] = None
-    phone: Optional[str] = None
+    avatar: str | None = None
+    phone: str | None = None
     joined_time: datetime.datetime
-    last_login_time: Optional[datetime.datetime] = None
+    last_login_time: datetime.datetime | None = None
 
 
 class ResetPassword(SchemaBase):

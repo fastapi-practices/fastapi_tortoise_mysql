@@ -7,7 +7,6 @@ from email_validator import validate_email, EmailNotValidError
 from fast_captcha import text_captcha
 from fastapi import Request, HTTPException, Response, UploadFile
 from fastapi.security import OAuth2PasswordRequestForm
-from tortoise.queryset import QuerySet
 
 from backend.app.common import jwt
 from backend.app.common.exception import errors
@@ -27,7 +26,6 @@ from backend.app.utils.send_email import send_verification_code_email
 
 
 class UserService:
-
     @staticmethod
     async def user_verify(username: str, password: str):
         user = await UserDao.get_user_by_username(username)
@@ -89,12 +87,10 @@ class UserService:
                 response.set_cookie(
                     key='fastapi_reset_pwd_code',
                     value=sha256(code.encode('utf-8')).hexdigest(),
-                    max_age=settings.COOKIES_MAX_AGE
+                    max_age=settings.COOKIES_MAX_AGE,
                 )
                 response.set_cookie(
-                    key='fastapi_reset_pwd_username',
-                    value=username_or_email,
-                    max_age=settings.COOKIES_MAX_AGE
+                    key='fastapi_reset_pwd_username', value=username_or_email, max_age=settings.COOKIES_MAX_AGE
                 )
             except Exception as e:
                 log.exception('无法发送验证码 {}', e)
@@ -115,14 +111,10 @@ class UserService:
                 response.set_cookie(
                     key='fastapi_reset_pwd_code',
                     value=sha256(code.encode('utf-8')).hexdigest(),
-                    max_age=settings.COOKIES_MAX_AGE
+                    max_age=settings.COOKIES_MAX_AGE,
                 )
                 username = await UserDao.get_username_by_email(username_or_email)
-                response.set_cookie(
-                    key='fastapi_reset_pwd_username',
-                    value=username,
-                    max_age=settings.COOKIES_MAX_AGE
-                )
+                response.set_cookie(key='fastapi_reset_pwd_username', value=username, max_age=settings.COOKIES_MAX_AGE)
             except Exception as e:
                 log.exception('无法发送验证码 {}', e)
                 raise e
@@ -185,8 +177,7 @@ class UserService:
                 try:
                     os.remove(AvatarPath + input_user_avatar)
                 except Exception as e:
-                    log.error('用户 {} 更新头像时，原头像文件 {} 删除失败\n{}', input_user.username, input_user_avatar,
-                              e)
+                    log.error('用户 {} 更新头像时，原头像文件 {} 删除失败\n{}', username, input_user_avatar, e)
             new_file = avatar.file.read()
             if 'image' not in avatar.content_type:
                 raise errors.ForbiddenError(msg='图片格式错误，请重新选择图片')

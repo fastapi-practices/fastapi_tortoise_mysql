@@ -40,4 +40,4 @@ def is_phone(text: str) -> bool:
     :param text:
     :return:
     """
-    return match_string(r"^1[3-9]\d{9}$", text)
+    return match_string(r'^1[3-9]\d{9}$', text)

@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from datetime import datetime
 from typing import Any
 
 from asgiref.sync import sync_to_async
 from fastapi.encoders import jsonable_encoder
-from pydantic import BaseModel, validate_call, ConfigDict
+from pydantic import BaseModel, validate_call
 
-from backend.app.core.conf import settings
 
 _ExcludeData = set[int | str] | dict[int | str, Any]
 
@@ -65,13 +63,13 @@ class ResponseBase:
 
     @validate_call
     async def success(
-            self,
-            *,
-            code: int = 200,
-            msg: str = 'Success',
-            data: Any | None = None,
-            exclude: _ExcludeData | None = None,
-            **kwargs
+        self,
+        *,
+        code: int = 200,
+        msg: str = 'Success',
+        data: Any | None = None,
+        exclude: _ExcludeData | None = None,
+        **kwargs
     ) -> dict:
         """
         请求成功返回通用方法
@@ -87,13 +85,13 @@ class ResponseBase:
 
     @validate_call
     async def fail(
-            self,
-            *,
-            code: int = 400,
-            msg: str = 'Bad Request',
-            data: Any = None,
-            exclude: _ExcludeData | None = None,
-            **kwargs
+        self,
+        *,
+        code: int = 400,
+        msg: str = 'Bad Request',
+        data: Any = None,
+        exclude: _ExcludeData | None = None,
+        **kwargs
     ) -> dict:
         data = data if data is None else await self.__json_encoder(data, exclude, **kwargs)
         return {'code': code, 'msg': msg, 'data': data}

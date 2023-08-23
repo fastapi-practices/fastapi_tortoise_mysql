@@ -43,10 +43,10 @@ class _Page(AbstractPage[T], Generic[T]):
 
     @classmethod
     def create(
-            cls,
-            items: Sequence[T],
-            total: int,
-            params: _Params,
+        cls,
+        items: Sequence[T],
+        total: int,
+        params: _Params,
     ) -> _Page[T]:
         page = params.page
         size = params.size
@@ -82,4 +82,3 @@ async def paging_data(query_set: QuerySet, page_data_schema: SchemaT) -> dict:
 
 # 分页依赖注入
 PageDepends = Depends(pagination_ctx(_Page))
-

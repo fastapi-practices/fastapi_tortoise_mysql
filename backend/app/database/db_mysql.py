@@ -14,8 +14,8 @@ mysql_config = {
                 'password': f'{settings.DB_PASSWORD}',
                 'database': f'{settings.DB_DATABASE}',
                 'charset': f'{settings.DB_ENCODING}',
-                'echo': settings.DB_ECHO
-            }
+                'echo': settings.DB_ECHO,
+            },
         },
     },
     'apps': {
@@ -25,5 +25,5 @@ mysql_config = {
         },
     },
     'use_tz': False,
-    'timezone': settings.DB_TIMEZONE
+    'timezone': settings.DB_TIMEZONE,
 }
