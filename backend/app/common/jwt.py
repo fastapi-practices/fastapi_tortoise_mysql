@@ -11,7 +11,7 @@ from passlib.context import CryptContext
 from pydantic import ValidationError
 from typing_extensions import Annotated
 
-from backend.app.common.exception.errors import TokenError, AuthorizationError
+from backend.app.common.exception.errors import AuthorizationError, TokenError
 from backend.app.core.conf import settings
 from backend.app.crud.crud_user import UserDao
 from backend.app.models.user import User

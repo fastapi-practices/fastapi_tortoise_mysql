@@ -6,7 +6,6 @@ from asgiref.sync import sync_to_async
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel, validate_call
 
-
 _ExcludeData = set[int | str] | dict[int | str, Any]
 
 __all__ = ['ResponseModel', 'response_base']
@@ -69,7 +68,7 @@ class ResponseBase:
         msg: str = 'Success',
         data: Any | None = None,
         exclude: _ExcludeData | None = None,
-        **kwargs
+        **kwargs,
     ) -> dict:
         """
         请求成功返回通用方法
@@ -91,7 +90,7 @@ class ResponseBase:
         msg: str = 'Bad Request',
         data: Any = None,
         exclude: _ExcludeData | None = None,
-        **kwargs
+        **kwargs,
     ) -> dict:
         data = data if data is None else await self.__json_encoder(data, exclude, **kwargs)
         return {'code': code, 'msg': msg, 'data': data}

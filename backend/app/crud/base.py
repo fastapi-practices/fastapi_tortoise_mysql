@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from typing import TypeVar, Generic, Type, Any, Dict
+from typing import Any, Dict, Generic, Type, TypeVar
 
 from asgiref.sync import sync_to_async
 from pydantic import BaseModel
