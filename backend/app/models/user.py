@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from uuid import uuid4
-
 from tortoise import Model, fields
+
+from backend.app.utils.generate_string import get_uuid4_str
 
 
 class User(Model):
@@ -11,7 +11,7 @@ class User(Model):
     """
 
     id = fields.BigIntField(pk=True, index=True, description='主键id')
-    uuid = fields.CharField(max_length=36, default=uuid4, unique=True, description='用户UID')
+    uuid = fields.CharField(max_length=36, default=get_uuid4_str, unique=True, description='用户UID')
     username = fields.CharField(max_length=32, unique=True, description='用户名')
     password = fields.CharField(max_length=255, description='密码')
     email = fields.CharField(max_length=64, unique=True, description='邮箱')

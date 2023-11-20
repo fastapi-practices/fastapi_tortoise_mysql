@@ -7,9 +7,9 @@ import aiosmtplib
 
 from backend.app.common.log import log
 from backend.app.core.conf import settings
-from backend.app.utils.generate_string import get_uuid_str
+from backend.app.utils.generate_string import get_uuid4_str
 
-__only_code = get_uuid_str()
+__only_code = get_uuid4_str()
 
 SEND_RESET_PASSWORD_TEXT = (
     f'您的重置密码验证码为：{__only_code}\n为了不影响您正常使用，请在{int(settings.COOKIES_MAX_AGE / 60)}分钟内完成密码重置'  # noqa: E501
