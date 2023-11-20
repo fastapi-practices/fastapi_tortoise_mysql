@@ -4,9 +4,9 @@ import datetime
 import uuid
 
 
-def get_uuid_str() -> str:
+def get_uuid4_str() -> str:
     """
-    生成uuid
+    获取 uuid4 字符串
 
     :return: str(uuid)
     """
@@ -15,7 +15,7 @@ def get_uuid_str() -> str:
 
 def get_current_timestamp() -> float:
     """
-    生成当前时间戳
+    获取当前时间戳
 
     :return:
     """
