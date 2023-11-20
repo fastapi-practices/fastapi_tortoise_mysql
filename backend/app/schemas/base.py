@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from asgiref.sync import sync_to_async
 from fastapi.exceptions import ValidationException
-from pydantic import BaseModel, ConfigDict, ValidationError, PydanticUserError
+from pydantic import BaseModel, ConfigDict, PydanticUserError, ValidationError
 from pydantic_core import ErrorDetails
 
 # 自定义验证错误信息不包含验证预期内容，如果想添加预期内容，只需在自定义错误信息中添加 {xxx(预期内容字段)} 即可，预期内容字段参考以下链接  # noqa: E501

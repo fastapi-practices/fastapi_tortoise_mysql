@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import os
+
 from hashlib import sha256
 
-from email_validator import validate_email, EmailNotValidError
+from email_validator import EmailNotValidError, validate_email
 from fast_captcha import text_captcha
-from fastapi import Request, HTTPException, Response, UploadFile
+from fastapi import HTTPException, Request, Response, UploadFile
 from fastapi.security import OAuth2PasswordRequestForm
 
 from backend.app.common import jwt
@@ -18,7 +19,7 @@ from backend.app.core.conf import settings
 from backend.app.core.path_conf import AvatarPath
 from backend.app.crud.crud_user import UserDao
 from backend.app.models.user import User
-from backend.app.schemas.user import CreateUser, ResetPassword, UpdateUser, Auth, Auth2
+from backend.app.schemas.user import Auth, Auth2, CreateUser, ResetPassword, UpdateUser
 from backend.app.utils import re_verify
 from backend.app.utils.format_string import cut_path
 from backend.app.utils.generate_string import get_current_timestamp

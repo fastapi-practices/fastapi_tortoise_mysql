@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import math
-from typing import TypeVar, Generic, Sequence, TYPE_CHECKING
 
-from fastapi import Query, Depends
+from typing import TYPE_CHECKING, Generic, Sequence, TypeVar
+
+from fastapi import Depends, Query
 from fastapi_pagination import pagination_ctx
 from fastapi_pagination.bases import AbstractPage, AbstractParams, RawParams
 from fastapi_pagination.ext.tortoise import paginate

@@ -14,7 +14,7 @@ from backend.app.common.redis import redis_client
 from backend.app.core.conf import settings
 from backend.app.database.db_mysql import mysql_config
 from backend.app.middleware.access_middle import AccessMiddleware
-from backend.app.utils.health_check import http_limit_callback, ensure_unique_route_names
+from backend.app.utils.health_check import ensure_unique_route_names, http_limit_callback
 
 
 def register_app():
@@ -61,6 +61,7 @@ def register_static_file(app: FastAPI):
     """
     if settings.STATIC_FILE:
         import os
+
         from fastapi.staticfiles import StaticFiles
 
         if not os.path.exists('./static'):

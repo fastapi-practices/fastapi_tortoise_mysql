@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 import datetime
 
-from email_validator import validate_email, EmailNotValidError
-from pydantic import UUID4, EmailStr, field_validator, ConfigDict
+from email_validator import EmailNotValidError, validate_email
+from pydantic import UUID4, ConfigDict, EmailStr, field_validator
 
 from backend.app.schemas.base import SchemaBase
 
