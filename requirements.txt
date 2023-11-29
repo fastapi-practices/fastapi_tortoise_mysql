@@ -3,7 +3,7 @@ aiofiles==23.2.1
 aiosmtplib==2.0.2
 asgiref==3.7.2
 bcrypt==4.0.1
-cryptography==41.0.3
+cryptography==41.0.6
 email-validator==2.0.0
 fast_captcha==0.2.1
 fastapi==0.101.1
