@@ -82,18 +82,33 @@
 3. 等待命令自动完成
 4. 浏览器访问：http://127.0.0.1:8000/api/v1/docs
 
-## 赞助
+## 互动
 
-> 如果此项目能够帮助到你，你可以赞助作者一些咖啡豆表示鼓励 :coffee:
+有且仅有当前一个频道，请注意辨别真伪
 
 <table>
   <tr>
-    <td><img src="https://github.com/wu-clan/image/blob/master/pay/weixin.jpg?raw=true" width="180px"/>
-    <td><img src="https://github.com/wu-clan/image/blob/master/pay/zfb.jpg?raw=true" width="180px"/>
+    <td><a href="https://t.me/+ZlPhIFkPp7E4NGI1">直链跳转</a></td>
+  </tr>
+  <tr>
+    <td> Telegram </td>
+  </tr>
+</table>
+
+## 赞助
+
+如果此项目能够帮助到你，你可以赞助作者一些咖啡豆表示鼓励 :coffee:
+
+<table>
+  <tr>
+    <td><img src="https://github.com/wu-clan/image/blob/master/pay/weixin.jpg?raw=true" width="180px" alt="Wechat"/>
+    <td><img src="https://github.com/wu-clan/image/blob/master/pay/zfb.jpg?raw=true" width="180px" alt="Alipay"/>
+    <td><img src="https://github.com/wu-clan/image/blob/master/pay/ERC20.jpg?raw=true" width="180px" alt="0x40D5e2304b452256afD9CE2d3d5531dc8d293138"/>
   </tr>
   <tr>
     <td align="center">微信</td>
     <td align="center">支付宝</td>
+    <td align="center">ERC20</td>
   </tr>
 </table>
 
