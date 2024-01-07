@@ -6,8 +6,8 @@ bcrypt==4.0.1
 cryptography==41.0.6
 email-validator==2.0.0
 fast_captcha==0.2.1
-fastapi==0.101.1
-fastapi-limiter==0.1.5
+fastapi==0.108.0
+fastapi-limiter==0.1.6
 fastapi-pagination==0.12.8
 gunicorn==21.2.0
 loguru==0.7.0
@@ -18,10 +18,8 @@ pydantic==2.2.1
 pydantic-settings==2.0.3
 python-jose==3.3.0
 python-multipart==0.0.6
-redis==4.6.0
-ruff==0.0.285
-starlette==0.27.0
+redis[hiredis]==5.0.1
 supervisor==4.2.5
-tortoise-orm[asyncmy]==0.20.0
+tortoise-orm[asyncmy]==0.24.0
 uvicorn[standard]==0.23.2
 wait-for-it==2.2.2
