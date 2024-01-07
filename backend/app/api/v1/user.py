@@ -3,7 +3,7 @@
 from fastapi import APIRouter, Request, Response, UploadFile
 
 from backend.app.common.jwt import CurrentUser, DependsJwtUser
-from backend.app.common.pagination import PageDepends, paging_data
+from backend.app.common.pagination import DependsPagination, paging_data
 from backend.app.common.response.response_schema import response_base
 from backend.app.schemas.user import CreateUser, GetUserInfo, ResetPassword, UpdateUser
 from backend.app.services.user_service import UserService
@@ -64,7 +64,7 @@ async def delete_avatar(username: str, current_user: CurrentUser):
     return await response_base.fail()
 
 
-@router.get('', summary='获取所有用户', dependencies=[DependsJwtUser, PageDepends])
+@router.get('', summary='获取所有用户', dependencies=[DependsJwtUser, DependsPagination])
 async def get_all_users():
     data = await UserService.get_user_list()
     page_data = await paging_data(data, GetUserInfo)

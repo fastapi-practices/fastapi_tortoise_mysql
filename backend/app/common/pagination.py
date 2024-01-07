@@ -82,4 +82,4 @@ async def paging_data(query_set: QuerySet, page_data_schema: SchemaT) -> dict:
 
 
 # 分页依赖注入
-PageDepends = Depends(pagination_ctx(_Page))
+DependsPagination = Depends(pagination_ctx(_Page))
