@@ -14,7 +14,7 @@ loguru==0.7.0
 passlib==1.7.4
 path==16.7.1
 pre-commit==3.2.2
-pydantic==2.2.1
+pydantic==2.4.0
 pydantic-settings==2.0.3
 python-jose==3.3.0
 python-multipart==0.0.6
