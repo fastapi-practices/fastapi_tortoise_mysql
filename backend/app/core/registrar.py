@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi_limiter import FastAPILimiter
@@ -17,6 +18,26 @@ from backend.app.middleware.access_middle import AccessMiddleware
 from backend.app.utils.health_check import ensure_unique_route_names, http_limit_callback
 
 
+@asynccontextmanager
+async def register_init(app: FastAPI):
+    """
+    启动初始化
+
+    :return:
+    """
+    # 连接redis
+    await redis_client.open()
+    # 初始化 limiter
+    await FastAPILimiter.init(redis_client, prefix=settings.LIMITER_REDIS_PREFIX, http_callback=http_limit_callback)
+
+    yield
+
+    # 关闭redis连接
+    await redis_client.close()
+    # 关闭 limiter
+    await FastAPILimiter.close()
+
+
 def register_app():
     # FastAPI
     app = FastAPI(
@@ -26,6 +47,7 @@ def register_app():
         docs_url=settings.DOCS_URL,
         redoc_url=settings.REDOCS_URL,
         openapi_url=settings.OPENAPI_URL,
+        lifespan=register_init,
     )
 
     # 注册静态文件
@@ -98,27 +120,6 @@ def register_router(app: FastAPI):
 
     # Extra
     ensure_unique_route_names(app)
-
-
-def register_init(app: FastAPI):
-    """
-    初始化连接
-
-    :param app: FastAPI
-    :return:
-    """
-
-    @app.on_event('startup')
-    async def startup():
-        # 连接redis
-        await redis_client.open()
-        # 初始化 limiter
-        await FastAPILimiter.init(redis_client, prefix=settings.LIMITER_REDIS_PREFIX, http_callback=http_limit_callback)
-
-    @app.on_event('shutdown')
-    async def shutdown():
-        # 关闭redis连接
-        await redis_client.close()
 
 
 def register_db(app: FastAPI):

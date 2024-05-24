@@ -6,3 +6,4 @@ venv/
 backend/app/log/
 backend/app/migrations/
 .ruff_cache/
+.pdm-python
