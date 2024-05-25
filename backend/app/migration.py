@@ -4,8 +4,8 @@ import sys
 
 sys.path.append('../../')
 
-from backend.app.database.db_mysql import mysql_config  # noqa: E402
-from backend.app.models import models  # noqa: E402
+from backend.app.database.db_mysql import mysql_config
+from backend.app.models import models
 
 TORTOISE_ORM = {
     'connections': mysql_config['connections'],
