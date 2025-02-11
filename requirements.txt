@@ -16,7 +16,7 @@ cffi==1.16.0; platform_python_implementation != "PyPy"
 cfgv==3.4.0
 click==8.1.7
 colorama==0.4.6; sys_platform == "win32" or platform_system == "Windows"
-cryptography==42.0.7
+cryptography==44.0.1
 dictdiffer==0.9.0
 distlib==0.3.8
 dnspython==2.6.1
