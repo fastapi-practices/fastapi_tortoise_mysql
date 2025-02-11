@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from backend.app.admin.models import models
+from backend.app.admin.model import models
 from backend.core.conf import settings
 
 mysql_config = {

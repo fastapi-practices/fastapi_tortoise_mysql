@@ -1,20 +1,10 @@
-version: "3.8"
-
-networks:
-  ftm_network:
-    driver: bridge
-
-volumes:
-  ftm_mysql:
-  ftm_redis:
-  ftm_static:
-
 services:
-  app:
+  ftm_server:
     build:
       context: ../../
       dockerfile: Dockerfile
-    container_name: "ftm_server"
+    image: ftm_server:latest
+    container_name: ftm_server
     restart: always
     depends_on:
       - ftm_mysql
@@ -22,21 +12,20 @@ services:
     volumes:
       - ftm_static:/ftm/backend/static
     networks:
-      ftm_network:
-        aliases:
-          - ftm_backend_server
+      - ftm_network
     command:
       - bash
       - -c
       - |
         wait-for-it -s ftm_mysql:3306 -s ftm_redis:6379 -t 300
-        supervisord -c /ftm/deploy/supervisor.conf
+        supervisord -c /etc/supervisor/supervisord.conf
+        supervisorctl restart
 
-  mysql:
+  ftm_mysql:
     image: mysql:8.0.29
     ports:
       - "3306:3306"
-    container_name: "ftm_mysql"
+    container_name: ftm_mysql
     restart: always
     environment:
       MYSQL_DATABASE: ftm
@@ -52,11 +41,11 @@ services:
       --collation-server=utf8mb4_general_ci
       --lower_case_table_names=1
 
-  redis:
+  ftm_redis:
     image: redis:6.2.7
     ports:
       - "6379:6379"
-    container_name: "ftm_redis"
+    container_name: ftm_redis
     restart: always
     environment:
       - TZ=Asia/Shanghai
@@ -65,16 +54,33 @@ services:
     networks:
       - ftm_network
 
-  nginx:
-    image: nginx
+  ftm_nginx:
+    image: nginx:stable
     ports:
       - "8000:80"
-    container_name: "ftm_nginx"
+    container_name: ftm_nginx
     restart: always
     depends_on:
-      - app
+      - ftm_server
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - ftm_static:/www/ftm/backend/static
+      - ../nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ftm_static:/var/www/ftm_server/backend/static
     networks:
       - ftm_network
+
+networks:
+  ftm_network:
+    name: ftm_network
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.10.10.0/24
+
+volumes:
+  ftm_mysql:
+    name: ftm_mysql
+  ftm_redis:
+    name: ftm_redis
+  ftm_static:
+    name: ftm_static

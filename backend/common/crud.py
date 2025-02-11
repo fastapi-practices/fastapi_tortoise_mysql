@@ -2,51 +2,49 @@
 # -*- coding: utf-8 -*-
 from typing import Any, Dict, Generic, Type, TypeVar
 
-from asgiref.sync import sync_to_async
 from pydantic import BaseModel
 from tortoise import Model
-from tortoise.queryset import QuerySet
 
-ModelType = TypeVar('ModelType', bound=Model)
-CreateSchemaType = TypeVar('CreateSchemaType', bound=BaseModel)
-UpdateSchemaType = TypeVar('UpdateSchemaType', bound=BaseModel)
+ModelT = TypeVar('ModelT', bound=Model)
+CreateSchemaT = TypeVar('CreateSchemaT', bound=BaseModel)
+UpdateSchemaT = TypeVar('UpdateSchemaT', bound=BaseModel)
 
 
-class CRUDBase(Generic[ModelType]):
-    def __init__(self, model: Type[ModelType]):
+class CRUDBase(Generic[ModelT]):
+    def __init__(self, model: Type[ModelT]):
         self.model = model
 
-    async def get(self, pk: int) -> ModelType:
+    async def get(self, pk: int) -> ModelT:
         return await self.model.filter(id=pk).first()
 
-    async def get_or_none(self, pk: int) -> ModelType | None:
+    async def get_or_none(self, pk: int) -> ModelT | None:
         return await self.model.get_or_none(id=pk)
 
-    @sync_to_async
-    def get_all(self) -> QuerySet[ModelType]:
-        return self.model.all()
+    async def get_all(self) -> list[Type[ModelT]]:
+        return await self.model.all().order_by('-id')
 
-    async def get_values(self, pk: int, *args: str, **kwargs: str) -> list[dict] | dict:
+    async def get_values(self, pk: int, *args: str, **kwargs: str) -> list[dict[str, Any]] | dict[str, Any]:
         return await self.model.get(id=pk).values(*args, **kwargs)
 
     async def get_values_list(self, pk: int, *fields: str, flat: bool = False) -> list[Any] | tuple:
         return await self.model.get(id=pk).values_list(*fields, flat=flat)
 
-    async def create(self, obj_in: CreateSchemaType, user_id: int | None = None) -> ModelType:
-        if user_id:
-            model = self.model(**obj_in.model_dump(), create_user=user_id)
+    async def create(self, obj_in: CreateSchemaT, **kwargs) -> ModelT:
+        if kwargs:
+            model = self.model(**obj_in.model_dump(), **kwargs)
             await model.save()
         else:
             model = await self.model.create(**obj_in.model_dump())
+        await model.save()
         return model
 
-    async def update(self, pk: int, obj_in: UpdateSchemaType | Dict[str, Any], user_id: int | None = None) -> int:
+    async def update(self, pk: int, obj_in: UpdateSchemaT | Dict[str, Any], **kwargs) -> int:
         if isinstance(obj_in, dict):
             update_data = obj_in
         else:
             update_data = obj_in.model_dump()
-        if user_id:
-            update_data.update({'update_user': user_id})
+        if kwargs:
+            update_data.update(**kwargs)
         count = await self.model.filter(id=pk).update(**update_data)
         return count
 

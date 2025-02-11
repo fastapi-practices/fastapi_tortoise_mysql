@@ -8,8 +8,8 @@ class UserMixin:
     用户 Mixin 数据类
     """
 
-    create_user = fields.BigIntField(null=False, verbose_name='创建者')
-    update_user = fields.BigIntField(null=True, verbose_name='修改者')
+    created_by = fields.BigIntField(null=False, verbose_name='创建者')
+    updated_by = fields.BigIntField(null=True, verbose_name='修改者')
 
 
 class Base(Model):

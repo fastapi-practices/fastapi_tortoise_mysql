@@ -1,23 +1,10 @@
 # FastAPI Tortoise Architecture
 
-作为 FastAPI 框架的一个基础项目，基于 python3.10 开发
+## 本地开发
 
-## 特征
-
-- [x] FastAPI > 0.100.0
-- [x] Async design
-- [x] Restful API
-- [x] Tortoise-orm > 0.20.0
-- [x] Pydantic 2.0
-- [x] Docker
-- [ ] ......
-
-## 使用
-
-> [!WARNING]
-> 此过程请格外注意端口占用情况, 特别是 8000, 3306, 6379...
-
-### 1: 传统
+* Python 3.10+
+* Mysql 8.0+
+* Redis 推荐最新稳定版
 
 1. 安装依赖项
 
@@ -64,7 +51,7 @@
    # 开发模式
    fastapi dev main.py
    ```
-   
+
 9. 浏览器访问: http://127.0.0.1:8000/api/v1/docs
 
 ---
@@ -86,11 +73,7 @@
     ```
 
 3. 等待命令自动完成
-4. 浏览器访问：http://127.0.0.1:8000/api/v1/docs
-
-## 互动
-
-[WeChat / QQ](https://github.com/wu-clan)
+4. 浏览器访问：http://127.0.0.1:8000/docs
 
 ## 赞助
 
