@@ -1,21 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import os
+
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi_limiter import FastAPILimiter
 from fastapi_pagination import add_pagination
-from starlette.middleware.cors import CORSMiddleware
-from starlette.middleware.gzip import GZipMiddleware
-from tortoise.contrib.fastapi import register_tortoise
+from tortoise.contrib.fastapi import RegisterTortoise
 
 from backend.app.router import route
 from backend.common.exception.exception_handler import register_exception
-from backend.common.redis import redis_client
+from backend.common.log import setup_logging, set_customize_logfile
 from backend.core.conf import settings
-from backend.database.db_mysql import mysql_config
-from backend.middleware.access_middle import AccessMiddleware
+from backend.core.path_conf import STATIC_DIR
+from backend.database.db import mysql_config
+from backend.database.redis import redis_client
+from backend.utils.demo_site import demo_site
 from backend.utils.health_check import ensure_unique_route_names, http_limit_callback
+from backend.utils.openapi import simplify_operation_ids
 
 
 @asynccontextmanager
@@ -29,6 +32,13 @@ async def register_init(app: FastAPI):
     await redis_client.open()
     # 初始化 limiter
     await FastAPILimiter.init(redis_client, prefix=settings.LIMITER_REDIS_PREFIX, http_callback=http_limit_callback)
+    # 连接 db
+    async with RegisterTortoise(
+        app=app,
+        config=mysql_config,
+        generate_schemas=True,
+    ):
+        yield
 
     yield
 
@@ -41,16 +51,18 @@ async def register_init(app: FastAPI):
 def register_app():
     # FastAPI
     app = FastAPI(
-        title=settings.TITLE,
-        version=settings.VERSION,
-        description=settings.DESCRIPTION,
-        docs_url=settings.DOCS_URL,
-        redoc_url=settings.REDOCS_URL,
-        openapi_url=settings.OPENAPI_URL,
+        title=settings.FASTAPI_TITLE,
+        version=settings.FASTAPI_VERSION,
+        description=settings.FASTAPI_DESCRIPTION,
+        docs_url=settings.FASTAPI_DOCS_URL,
+        redoc_url=settings.FASTAPI_REDOC_URL,
+        openapi_url=settings.FASTAPI_OPENAPI_URL,
         lifespan=register_init,
     )
+    # 日志
+    register_logger()
 
-    # 注册静态文件
+    # 静态文件
     register_static_file(app)
 
     # 中间件
@@ -58,12 +70,6 @@ def register_app():
 
     # 路由
     register_router(app)
-
-    # 初始化
-    register_init(app)
-
-    # 数据库
-    register_db(app)
 
     # 分页
     register_page(app)
@@ -74,6 +80,16 @@ def register_app():
     return app
 
 
+def register_logger() -> None:
+    """
+    系统日志
+
+    :return:
+    """
+    setup_logging()
+    set_customize_logfile()
+
+
 def register_static_file(app: FastAPI):
     """
     静态文件交互开发模式, 生产使用 nginx 静态资源服务
@@ -81,19 +97,25 @@ def register_static_file(app: FastAPI):
     :param app:
     :return:
     """
-    if settings.STATIC_FILE:
-        import os
-
+    if settings.FASTAPI_STATIC_FILES:
         from fastapi.staticfiles import StaticFiles
 
-        if not os.path.exists('./static'):
-            os.mkdir('./static')
-        app.mount('/static', StaticFiles(directory='static'), name='static')
+        if not os.path.exists(STATIC_DIR):
+            os.makedirs(STATIC_DIR)
+
+        app.mount('/static', StaticFiles(directory=STATIC_DIR), name='static')
 
 
 def register_middleware(app) -> None:
+    # 接口访问日志
+    if settings.MIDDLEWARE_ACCESS:
+        from backend.middleware.access_middle import AccessMiddleware
+
+        app.add_middleware(AccessMiddleware)
     # 跨域
     if settings.MIDDLEWARE_CORS:
+        from starlette.middleware.cors import CORSMiddleware
+
         app.add_middleware(
             CORSMiddleware,
             allow_origins=['*'],
@@ -101,12 +123,6 @@ def register_middleware(app) -> None:
             allow_methods=['*'],
             allow_headers=['*'],
         )
-    # gzip
-    if settings.MIDDLEWARE_GZIP:
-        app.add_middleware(GZipMiddleware)
-    # 接口访问日志
-    if settings.MIDDLEWARE_ACCESS:
-        app.add_middleware(AccessMiddleware)
 
 
 def register_router(app: FastAPI):
@@ -116,18 +132,14 @@ def register_router(app: FastAPI):
     :param app: FastAPI
     :return:
     """
-    app.include_router(route)
+    dependencies = [Depends(demo_site)] if settings.DEMO_MODE else None
+
+    # API
+    app.include_router(route, dependencies=dependencies)
 
     # Extra
     ensure_unique_route_names(app)
-
-
-def register_db(app: FastAPI):
-    register_tortoise(
-        app,
-        config=mysql_config,
-        generate_schemas=settings.DB_AUTO_GENERATE_SCHEMAS,
-    )
+    simplify_operation_ids(app)
 
 
 def register_page(app: FastAPI):

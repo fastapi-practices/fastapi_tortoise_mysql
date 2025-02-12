@@ -3,9 +3,12 @@
 
 [metadata]
 groups = ["default"]
-strategy = ["cross_platform", "inherit_metadata"]
-lock_version = "4.4.1"
-content_hash = "sha256:e7aa6f727ea8139883ccfce8e68214883db4d38989185a0bbb2a949c66b5c809"
+strategy = ["inherit_metadata"]
+lock_version = "4.5.0"
+content_hash = "sha256:5a2d4dd24fb376cf69b8375f0cec745a39f6bfe778af1c95366865cfcfacea60"
+
+[[metadata.targets]]
+requires_python = ">=3.10"
 
 [[package]]
 name = "aerich"
@@ -23,28 +26,6 @@ dependencies = [
 files = [
     {file = "aerich-0.7.2-py3-none-any.whl", hash = "sha256:84c78c07d45436b89ca4db5411eca4e9292a591fb7d6fd4282fa4a7d0c6d2af1"},
     {file = "aerich-0.7.2.tar.gz", hash = "sha256:31d67de7b96184636b89de99062e059e5e6204b6251d24c33eb21fc9cf982e09"},
-]
-
-[[package]]
-name = "aiofiles"
-version = "23.2.1"
-requires_python = ">=3.7"
-summary = "File support for asyncio."
-groups = ["default"]
-files = [
-    {file = "aiofiles-23.2.1-py3-none-any.whl", hash = "sha256:19297512c647d4b27a2cf7c34caa7e405c0d60b5560618a29a9fe027b18b0107"},
-    {file = "aiofiles-23.2.1.tar.gz", hash = "sha256:84ec2218d8419404abcb9f0c02df3f34c6e0a68ed41072acfb1cef5cbc29051a"},
-]
-
-[[package]]
-name = "aiosmtplib"
-version = "3.0.1"
-requires_python = ">=3.8,<4.0"
-summary = "asyncio SMTP client"
-groups = ["default"]
-files = [
-    {file = "aiosmtplib-3.0.1-py3-none-any.whl", hash = "sha256:abcceae7e820577307b4cda2041b2c25e5121469c0e186764ddf8e15b12064cd"},
-    {file = "aiosmtplib-3.0.1.tar.gz", hash = "sha256:43580604b152152a221598be3037f0ae6359c2817187ac4433bd857bc3fc6513"},
 ]
 
 [[package]]
@@ -67,6 +48,9 @@ version = "0.7.0"
 requires_python = ">=3.8"
 summary = "Reusable constraint types to use with typing.Annotated"
 groups = ["default"]
+dependencies = [
+    "typing-extensions>=4.0.0; python_version < \"3.9\"",
+]
 files = [
     {file = "annotated_types-0.7.0-py3-none-any.whl", hash = "sha256:1f02e8b43a8fbbc3f3e0d4f0f4bfc8131bcb4eebe8849b8e5c773f3a1c582a53"},
     {file = "annotated_types-0.7.0.tar.gz", hash = "sha256:aff07c09a53a08bc8cfccb9c85b05f1aa9a2a6f23728d790723543408344ce89"},
@@ -110,6 +94,9 @@ requires_python = ">=3.7"
 summary = "Timeout context manager for asyncio programs"
 groups = ["default"]
 marker = "python_full_version < \"3.11.3\""
+dependencies = [
+    "typing-extensions>=3.6.5; python_version < \"3.8\"",
+]
 files = [
     {file = "async-timeout-4.0.3.tar.gz", hash = "sha256:4640d96be84d82d02ed59ea2b7105a0f7b33abe8703703cd0ab0bf87c427522f"},
     {file = "async_timeout-4.0.3-py3-none-any.whl", hash = "sha256:7405140ff1230c310e51dc27b3145b9092d659ce68ff733fb0cefe3ee42be028"},
@@ -267,6 +254,7 @@ summary = "Composable command line interface toolkit"
 groups = ["default"]
 dependencies = [
     "colorama; platform_system == \"Windows\"",
+    "importlib-metadata; python_version < \"3.8\"",
 ]
 files = [
     {file = "click-8.1.7-py3-none-any.whl", hash = "sha256:ae74fb96c20a0277a1d615f1e4d73c8414f5a98db8b799a7931d1582f3390c28"},
@@ -522,25 +510,14 @@ files = [
 ]
 
 [[package]]
-name = "gunicorn"
-version = "22.0.0"
-requires_python = ">=3.7"
-summary = "WSGI HTTP Server for UNIX"
-groups = ["default"]
-dependencies = [
-    "packaging",
-]
-files = [
-    {file = "gunicorn-22.0.0-py3-none-any.whl", hash = "sha256:350679f91b24062c86e386e198a15438d53a7a8207235a78ba1b53df4c4378d9"},
-    {file = "gunicorn-22.0.0.tar.gz", hash = "sha256:4a0b436239ff76fb33f11c07a16482c521a7e09c1ce3cc293c2330afe01bec63"},
-]
-
-[[package]]
 name = "h11"
 version = "0.14.0"
 requires_python = ">=3.7"
 summary = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
 groups = ["default"]
+dependencies = [
+    "typing-extensions; python_version < \"3.8\"",
+]
 files = [
     {file = "h11-0.14.0-py3-none-any.whl", hash = "sha256:e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761"},
     {file = "h11-0.14.0.tar.gz", hash = "sha256:8f19fbbe99e72420ff35c00b27a34cb9937e902a8b810e2c88300c6f0a3b699d"},
@@ -709,13 +686,13 @@ files = [
 
 [[package]]
 name = "iso8601"
-version = "1.1.0"
-requires_python = ">=3.6.2,<4.0"
+version = "2.1.0"
+requires_python = ">=3.7,<4.0"
 summary = "Simple module to parse ISO 8601 dates"
 groups = ["default"]
 files = [
-    {file = "iso8601-1.1.0-py3-none-any.whl", hash = "sha256:8400e90141bf792bce2634df533dc57e3bee19ea120a87bebcd3da89a58ad73f"},
-    {file = "iso8601-1.1.0.tar.gz", hash = "sha256:32811e7b81deee2063ea6d2e94f8819a86d1f3811e49d23623a41fa832bef03f"},
+    {file = "iso8601-2.1.0-py3-none-any.whl", hash = "sha256:aac4145c4dcb66ad8b648a02830f5e2ff6c24af20f4f482689be402db2429242"},
+    {file = "iso8601-2.1.0.tar.gz", hash = "sha256:6b1d3829ee8921c4301998c909f7829fa9ed3cbdac0d3b16af2d743aed1ba8df"},
 ]
 
 [[package]]
@@ -750,6 +727,7 @@ requires_python = ">=3.5"
 summary = "Python logging made (stupidly) simple"
 groups = ["default"]
 dependencies = [
+    "aiocontextvars>=0.2.0; python_version < \"3.7\"",
     "colorama>=0.3.4; sys_platform == \"win32\"",
     "win32-setctime>=1.0.0; sys_platform == \"win32\"",
 ]
@@ -824,6 +802,44 @@ files = [
 ]
 
 [[package]]
+name = "msgspec"
+version = "0.19.0"
+requires_python = ">=3.9"
+summary = "A fast serialization and validation library, with builtin support for JSON, MessagePack, YAML, and TOML."
+groups = ["default"]
+files = [
+    {file = "msgspec-0.19.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:d8dd848ee7ca7c8153462557655570156c2be94e79acec3561cf379581343259"},
+    {file = "msgspec-0.19.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:0553bbc77662e5708fe66aa75e7bd3e4b0f209709c48b299afd791d711a93c36"},
+    {file = "msgspec-0.19.0-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:fe2c4bf29bf4e89790b3117470dea2c20b59932772483082c468b990d45fb947"},
+    {file = "msgspec-0.19.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:00e87ecfa9795ee5214861eab8326b0e75475c2e68a384002aa135ea2a27d909"},
+    {file = "msgspec-0.19.0-cp310-cp310-musllinux_1_2_aarch64.whl", hash = "sha256:3c4ec642689da44618f68c90855a10edbc6ac3ff7c1d94395446c65a776e712a"},
+    {file = "msgspec-0.19.0-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:2719647625320b60e2d8af06b35f5b12d4f4d281db30a15a1df22adb2295f633"},
+    {file = "msgspec-0.19.0-cp310-cp310-win_amd64.whl", hash = "sha256:695b832d0091edd86eeb535cd39e45f3919f48d997685f7ac31acb15e0a2ed90"},
+    {file = "msgspec-0.19.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:aa77046904db764b0462036bc63ef71f02b75b8f72e9c9dd4c447d6da1ed8f8e"},
+    {file = "msgspec-0.19.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:047cfa8675eb3bad68722cfe95c60e7afabf84d1bd8938979dd2b92e9e4a9551"},
+    {file = "msgspec-0.19.0-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:e78f46ff39a427e10b4a61614a2777ad69559cc8d603a7c05681f5a595ea98f7"},
+    {file = "msgspec-0.19.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6c7adf191e4bd3be0e9231c3b6dc20cf1199ada2af523885efc2ed218eafd011"},
+    {file = "msgspec-0.19.0-cp311-cp311-musllinux_1_2_aarch64.whl", hash = "sha256:f04cad4385e20be7c7176bb8ae3dca54a08e9756cfc97bcdb4f18560c3042063"},
+    {file = "msgspec-0.19.0-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:45c8fb410670b3b7eb884d44a75589377c341ec1392b778311acdbfa55187716"},
+    {file = "msgspec-0.19.0-cp311-cp311-win_amd64.whl", hash = "sha256:70eaef4934b87193a27d802534dc466778ad8d536e296ae2f9334e182ac27b6c"},
+    {file = "msgspec-0.19.0-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:f98bd8962ad549c27d63845b50af3f53ec468b6318400c9f1adfe8b092d7b62f"},
+    {file = "msgspec-0.19.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:43bbb237feab761b815ed9df43b266114203f53596f9b6e6f00ebd79d178cdf2"},
+    {file = "msgspec-0.19.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:4cfc033c02c3e0aec52b71710d7f84cb3ca5eb407ab2ad23d75631153fdb1f12"},
+    {file = "msgspec-0.19.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d911c442571605e17658ca2b416fd8579c5050ac9adc5e00c2cb3126c97f73bc"},
+    {file = "msgspec-0.19.0-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:757b501fa57e24896cf40a831442b19a864f56d253679f34f260dcb002524a6c"},
+    {file = "msgspec-0.19.0-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:5f0f65f29b45e2816d8bded36e6b837a4bf5fb60ec4bc3c625fa2c6da4124537"},
+    {file = "msgspec-0.19.0-cp312-cp312-win_amd64.whl", hash = "sha256:067f0de1c33cfa0b6a8206562efdf6be5985b988b53dd244a8e06f993f27c8c0"},
+    {file = "msgspec-0.19.0-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:f12d30dd6266557aaaf0aa0f9580a9a8fbeadfa83699c487713e355ec5f0bd86"},
+    {file = "msgspec-0.19.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:82b2c42c1b9ebc89e822e7e13bbe9d17ede0c23c187469fdd9505afd5a481314"},
+    {file = "msgspec-0.19.0-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:19746b50be214a54239aab822964f2ac81e38b0055cca94808359d779338c10e"},
+    {file = "msgspec-0.19.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:60ef4bdb0ec8e4ad62e5a1f95230c08efb1f64f32e6e8dd2ced685bcc73858b5"},
+    {file = "msgspec-0.19.0-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:ac7f7c377c122b649f7545810c6cd1b47586e3aa3059126ce3516ac7ccc6a6a9"},
+    {file = "msgspec-0.19.0-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:a5bc1472223a643f5ffb5bf46ccdede7f9795078194f14edd69e3aab7020d327"},
+    {file = "msgspec-0.19.0-cp313-cp313-win_amd64.whl", hash = "sha256:317050bc0f7739cb30d257ff09152ca309bf5a369854bbf1e57dffc310c1f20f"},
+    {file = "msgspec-0.19.0.tar.gz", hash = "sha256:604037e7cd475345848116e89c553aa9a233259733ab51986ac924ab1b976f8e"},
+]
+
+[[package]]
 name = "nodeenv"
 version = "1.8.0"
 requires_python = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*"
@@ -875,27 +891,6 @@ files = [
 ]
 
 [[package]]
-name = "packaging"
-version = "24.0"
-requires_python = ">=3.7"
-summary = "Core utilities for Python packages"
-groups = ["default"]
-files = [
-    {file = "packaging-24.0-py3-none-any.whl", hash = "sha256:2ddfb553fdf02fb784c234c7ba6ccc288296ceabec964ad2eae3777778130bc5"},
-    {file = "packaging-24.0.tar.gz", hash = "sha256:eb82c5e3e56209074766e6885bb04b8c38a0c015d0a30036ebe7ece34c9989e9"},
-]
-
-[[package]]
-name = "passlib"
-version = "1.7.4"
-summary = "comprehensive password hashing framework supporting over 30 schemes"
-groups = ["default"]
-files = [
-    {file = "passlib-1.7.4-py2.py3-none-any.whl", hash = "sha256:aa6bca462b8d8bda89c70b382f0c298a20b5560af6cbfa2dce410c0a2fb669f1"},
-    {file = "passlib-1.7.4.tar.gz", hash = "sha256:defd50f72b65c5402ab2c573830a6978e5f202ad0d984793c8dde2c4152ebe04"},
-]
-
-[[package]]
 name = "path"
 version = "16.14.0"
 requires_python = ">=3.8"
@@ -904,6 +899,16 @@ groups = ["default"]
 files = [
     {file = "path-16.14.0-py3-none-any.whl", hash = "sha256:8ee37703cbdc7cc83835ed4ecc6b638226fb2b43b7b45f26b620589981a109a5"},
     {file = "path-16.14.0.tar.gz", hash = "sha256:dbaaa7efd4602fd6ba8d82890dc7823d69e5de740a6e842d9919b0faaf2b6a8e"},
+]
+
+[[package]]
+name = "phonenumbers"
+version = "8.13.54"
+summary = "Python version of Google's common library for parsing, formatting, storing and validating international phone numbers."
+groups = ["default"]
+files = [
+    {file = "phonenumbers-8.13.54-py2.py3-none-any.whl", hash = "sha256:97624ada7260daafd09538baa6574b14cb9151cf29c5b22d9278abd050957edf"},
+    {file = "phonenumbers-8.13.54.tar.gz", hash = "sha256:4c32e3c941b24e5ce28d2211f624f0fef08462781e3d7e5e85192275cfd6c680"},
 ]
 
 [[package]]
@@ -978,6 +983,17 @@ dependencies = [
 files = [
     {file = "pre_commit-3.7.1-py2.py3-none-any.whl", hash = "sha256:fae36fd1d7ad7d6a5a1c0b0d5adb2ed1a3bda5a21bf6c3e5372073d7a11cd4c5"},
     {file = "pre_commit-3.7.1.tar.gz", hash = "sha256:8ca3ad567bc78a4972a3f1a477e94a79d4597e8140a6e0b651c5e33899c3654a"},
+]
+
+[[package]]
+name = "pwdlib"
+version = "0.2.1"
+requires_python = ">=3.8"
+summary = "Modern password hashing for Python"
+groups = ["default"]
+files = [
+    {file = "pwdlib-0.2.1-py3-none-any.whl", hash = "sha256:1823dc6f22eae472b540e889ecf57fd424051d6a4023ec0bcf7f0de2d9d7ef8c"},
+    {file = "pwdlib-0.2.1.tar.gz", hash = "sha256:9a1d8a8fa09a2f7ebf208265e55d7d008103cbdc82b9e4902ffdd1ade91add5e"},
 ]
 
 [[package]]
@@ -1128,13 +1144,13 @@ files = [
 
 [[package]]
 name = "pypika-tortoise"
-version = "0.1.6"
-requires_python = ">=3.7,<4.0"
+version = "0.5.0"
+requires_python = "<4.0,>=3.8"
 summary = "Forked from pypika and streamline just for tortoise-orm"
 groups = ["default"]
 files = [
-    {file = "pypika-tortoise-0.1.6.tar.gz", hash = "sha256:d802868f479a708e3263724c7b5719a26ad79399b2a70cea065f4a4cadbebf36"},
-    {file = "pypika_tortoise-0.1.6-py3-none-any.whl", hash = "sha256:2d68bbb7e377673743cff42aa1059f3a80228d411fbcae591e4465e173109fd8"},
+    {file = "pypika_tortoise-0.5.0-py3-none-any.whl", hash = "sha256:dbdc47eb52ce17407b05ce9f8560ce93b856d7b28beb01971d956b017846691f"},
+    {file = "pypika_tortoise-0.5.0.tar.gz", hash = "sha256:ed0f56761868dc222c03e477578638590b972280b03c7c45cd93345b18b61f58"},
 ]
 
 [[package]]
@@ -1225,6 +1241,8 @@ summary = "Python client for Redis database and key-value store"
 groups = ["default"]
 dependencies = [
     "async-timeout>=4.0.3; python_full_version < \"3.11.3\"",
+    "importlib-metadata>=1.0; python_version < \"3.8\"",
+    "typing-extensions; python_version < \"3.8\"",
 ]
 files = [
     {file = "redis-5.0.4-py3-none-any.whl", hash = "sha256:7adc2835c7a9b5033b7ad8f8918d09b7344188228809c98df07af226d39dec91"},
@@ -1256,6 +1274,7 @@ groups = ["default"]
 dependencies = [
     "markdown-it-py>=2.2.0",
     "pygments<3.0.0,>=2.13.0",
+    "typing-extensions<5.0,>=4.0.0; python_version < \"3.9\"",
 ]
 files = [
     {file = "rich-13.7.1-py3-none-any.whl", hash = "sha256:4edbae314f59eb482f54e9e30bf00d33350aaa94f4bfcd4e9e3110e64d0d7222"},
@@ -1328,6 +1347,7 @@ summary = "The little ASGI library that shines."
 groups = ["default"]
 dependencies = [
     "anyio<5,>=3.4.0",
+    "typing-extensions>=3.10.0; python_version < \"3.10\"",
 ]
 files = [
     {file = "starlette-0.37.2-py3-none-any.whl", hash = "sha256:6fe59f29268538e5d0d182f2791a479a0c64638e6935d1c6989e63fb2699c6ee"},
@@ -1347,36 +1367,35 @@ files = [
 
 [[package]]
 name = "tortoise-orm"
-version = "0.21.0"
-requires_python = "<4.0,>=3.8"
+version = "0.24.0"
+requires_python = "<4.0,>=3.9"
 summary = "Easy async ORM for python, built with relations in mind"
 groups = ["default"]
 dependencies = [
-    "aiosqlite<0.18.0,>=0.16.0",
-    "iso8601<2.0.0,>=1.0.2",
-    "pydantic!=2.7.0,<3.0,>=2.0",
-    "pypika-tortoise<0.2.0,>=0.1.6",
+    "aiosqlite<0.21.0,>=0.16.0",
+    "iso8601<3.0.0,>=2.1.0",
+    "pypika-tortoise<0.6.0,>=0.5.0",
     "pytz",
 ]
 files = [
-    {file = "tortoise_orm-0.21.0-py3-none-any.whl", hash = "sha256:f2252855989756193c18f145226852b74d867754c3b2e3b76e2aa3e010f4ccd0"},
-    {file = "tortoise_orm-0.21.0.tar.gz", hash = "sha256:75150a6c802c3a2ca661f7c9d1928c05543e4b77f667eef9b97f2c0ac83ecae6"},
+    {file = "tortoise_orm-0.24.0-py3-none-any.whl", hash = "sha256:ee3b72b226767293b24c5c4906ae5f027d7cc84496cd503352c918564b4fd687"},
+    {file = "tortoise_orm-0.24.0.tar.gz", hash = "sha256:ae0704a93ea27931724fc899e57268c8081afce3b32b110b00037ec206553e7d"},
 ]
 
 [[package]]
 name = "tortoise-orm"
-version = "0.21.0"
+version = "0.24.0"
 extras = ["asyncmy"]
-requires_python = "<4.0,>=3.8"
+requires_python = "<4.0,>=3.9"
 summary = "Easy async ORM for python, built with relations in mind"
 groups = ["default"]
 dependencies = [
     "asyncmy<0.3.0,>=0.2.8",
-    "tortoise-orm==0.21.0",
+    "tortoise-orm==0.24.0",
 ]
 files = [
-    {file = "tortoise_orm-0.21.0-py3-none-any.whl", hash = "sha256:f2252855989756193c18f145226852b74d867754c3b2e3b76e2aa3e010f4ccd0"},
-    {file = "tortoise_orm-0.21.0.tar.gz", hash = "sha256:75150a6c802c3a2ca661f7c9d1928c05543e4b77f667eef9b97f2c0ac83ecae6"},
+    {file = "tortoise_orm-0.24.0-py3-none-any.whl", hash = "sha256:ee3b72b226767293b24c5c4906ae5f027d7cc84496cd503352c918564b4fd687"},
+    {file = "tortoise_orm-0.24.0.tar.gz", hash = "sha256:ae0704a93ea27931724fc899e57268c8081afce3b32b110b00037ec206553e7d"},
 ]
 
 [[package]]
@@ -1405,6 +1424,17 @@ groups = ["default"]
 files = [
     {file = "typing_extensions-4.12.0-py3-none-any.whl", hash = "sha256:b349c66bea9016ac22978d800cfff206d5f9816951f12a7d0ec5578b0a819594"},
     {file = "typing_extensions-4.12.0.tar.gz", hash = "sha256:8cbcdc8606ebcb0d95453ad7dc5065e6237b6aa230a31e81d0f440c30fed5fd8"},
+]
+
+[[package]]
+name = "tzdata"
+version = "2025.1"
+requires_python = ">=2"
+summary = "Provider of IANA time zone data"
+groups = ["default"]
+files = [
+    {file = "tzdata-2025.1-py2.py3-none-any.whl", hash = "sha256:7e127113816800496f027041c570f50bcd464a020098a3b6b199517772303639"},
+    {file = "tzdata-2025.1.tar.gz", hash = "sha256:24894909e88cdb28bd1636c6887801df64cb485bd593f2fd83ef29075a81d694"},
 ]
 
 [[package]]
@@ -1550,6 +1580,7 @@ groups = ["default"]
 dependencies = [
     "distlib<1,>=0.3.7",
     "filelock<4,>=3.12.2",
+    "importlib-metadata>=6.6; python_version < \"3.8\"",
     "platformdirs<5,>=3.9.1",
 ]
 files = [
