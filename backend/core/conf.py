@@ -77,7 +77,15 @@ class Settings(BaseSettings):
 
     # 中间件
     MIDDLEWARE_CORS: bool = True
-    MIDDLEWARE_ACCESS: bool = False
+    MIDDLEWARE_ACCESS: bool = True
+
+    # CORS
+    CORS_ALLOWED_ORIGINS: list[str] = [
+        'http://127.0.0.1:8000',
+    ]
+    CORS_EXPOSE_HEADERS: list[str] = [
+        '*',
+    ]
 
     # DateTime
     DATETIME_TIMEZONE: str = 'Asia/Shanghai'

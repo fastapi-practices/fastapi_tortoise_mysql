@@ -1,19 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
-
-from fastapi import UploadFile
-
+from tortoise.queryset import QuerySet
 from backend.app.admin.crud.crud_user import user_dao
 from backend.app.admin.model.user import User
-from backend.app.admin.schema.user import CreateUser, ResetPassword, UpdateUser
+from backend.app.admin.schema.user import CreateUser, ResetPassword, UpdateUser, Avatar
 from backend.common.exception import errors
 from backend.common.security.jwt import get_hash_password, password_verify, superuser_verify
 
 
 class UserService:
     @staticmethod
-    async def register(*, obj: CreateUser):
+    async def register(*, obj: CreateUser) -> None:
         if not obj.password:
             raise errors.ForbiddenError(msg='密码为空')
         username = await user_dao.get_by_username(name=obj.username)
@@ -38,14 +35,14 @@ class UserService:
         return count
 
     @staticmethod
-    async def get_userinfo(*, username: str):
+    async def get_userinfo(*, username: str) -> User:
         user = await user_dao.get_by_username(username)
         if not user:
             raise errors.NotFoundError(msg='用户不存在')
         return user
 
     @staticmethod
-    async def update(*, username: str, obj: UpdateUser):
+    async def update(*, username: str, obj: UpdateUser) -> int:
         input_user = await user_dao.get_by_username(username)
         if not input_user:
             raise errors.NotFoundError(msg='用户不存在')
@@ -62,7 +59,7 @@ class UserService:
         return count
 
     @staticmethod
-    async def update_avatar(*, username: str, avatar: UploadFile):
+    async def update_avatar(*, username: str, avatar: Avatar) -> int:
         input_user = await user_dao.get_by_username(username)
         if not input_user:
             raise errors.NotFoundError(msg='用户不存在')
@@ -70,11 +67,11 @@ class UserService:
         return count
 
     @staticmethod
-    async def get_list():
-        return await user_dao.get_all()
+    async def get_list(*, username: str = None, phone: str = None, status: int = None) -> QuerySet:
+        return await user_dao.get_list(username=username, phone=phone, status=status)
 
     @staticmethod
-    async def delete(*, username: str, current_user: User):
+    async def delete(*, username: str, current_user: User) -> int:
         superuser_verify(current_user)
         input_user = await user_dao.get_by_username(username)
         if not input_user:

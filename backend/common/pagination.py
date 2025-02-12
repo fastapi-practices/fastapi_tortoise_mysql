@@ -12,7 +12,9 @@ from fastapi_pagination.ext.tortoise import paginate
 from fastapi_pagination.links.bases import create_links
 from pydantic import BaseModel, Field
 
+
 if TYPE_CHECKING:
+    from backend.common.crud import ModelT
     from tortoise.queryset import QuerySet
 
 T = TypeVar('T')
@@ -102,7 +104,7 @@ class PageData(_PageDetails, Generic[SchemaT]):
     items: Sequence[SchemaT]
 
 
-async def paging_data(query_set: QuerySet) -> dict:
+async def paging_data(query_set: QuerySet | type[ModelT]) -> dict:
     """
     基于 SQLAlchemy 创建分页数据
 

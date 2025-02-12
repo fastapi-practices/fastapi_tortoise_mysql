@@ -3,7 +3,8 @@
 from datetime import datetime
 
 import bcrypt
-
+from tortoise.queryset import QuerySet
+from tortoise.expressions import Q
 from tortoise.transactions import atomic
 
 from backend.app.admin.model.user import User
@@ -41,19 +42,25 @@ class CRUDUser(CRUDBase[User]):
 
     @atomic()
     async def update_userinfo(self, input_user: int, obj_in: UpdateUser) -> int:
-        return await self.update(input_user, obj_in)
+        return await self.update_model(input_user, obj_in)
 
     @atomic()
-    async def update_avatar(self, input_user: int, avatar: Avatar):
-        return await self.update(input_user, {'avatar': avatar.url})
+    async def update_avatar(self, input_user: int, avatar: Avatar) -> int:
+        return await self.update_model(input_user, {'avatar': avatar.url})
+
+    async def get_list(self, username: str = None, phone: str = None, status: int = None) -> QuerySet:
+        where_list = []
+        if username:
+            where_list.append(Q(username=username))
+        if phone:
+            where_list.append(Q(phone=phone))
+        if status:
+            where_list.append(Q(status=status))
+        return self.model.filter(Q(*where_list)).order_by('-id').all()
 
     @atomic()
-    async def delete_avatar(self, pk: int) -> int:
-        return await self.model.filter(id=pk).update(avatar=None)
-
-    @atomic()
-    async def delete_user(self, pk: int) -> int:
-        return await self.delete(pk)
+    async def delete(self, pk: int) -> int:
+        return await self.delete_model(pk)
 
 
 user_dao: CRUDUser = CRUDUser(User)

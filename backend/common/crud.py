@@ -29,7 +29,7 @@ class CRUDBase(Generic[ModelT]):
     async def get_values_list(self, pk: int, *fields: str, flat: bool = False) -> list[Any] | tuple:
         return await self.model.get(id=pk).values_list(*fields, flat=flat)
 
-    async def create(self, obj_in: CreateSchemaT, **kwargs) -> ModelT:
+    async def create_model(self, obj_in: CreateSchemaT, **kwargs) -> ModelT:
         if kwargs:
             model = self.model(**obj_in.model_dump(), **kwargs)
             await model.save()
@@ -38,7 +38,7 @@ class CRUDBase(Generic[ModelT]):
         await model.save()
         return model
 
-    async def update(self, pk: int, obj_in: UpdateSchemaT | Dict[str, Any], **kwargs) -> int:
+    async def update_model(self, pk: int, obj_in: UpdateSchemaT | Dict[str, Any], **kwargs) -> int:
         if isinstance(obj_in, dict):
             update_data = obj_in
         else:
@@ -48,6 +48,6 @@ class CRUDBase(Generic[ModelT]):
         count = await self.model.filter(id=pk).update(**update_data)
         return count
 
-    async def delete(self, pk: int) -> int:
+    async def delete_model(self, pk: int) -> int:
         count = await self.model.filter(id=pk).delete()
         return count

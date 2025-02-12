@@ -8,13 +8,13 @@ mysql_config = {
         'default': {
             'engine': 'tortoise.backends.mysql',
             'credentials': {
-                'host': f'{settings.DB_HOST}',
-                'port': settings.DB_PORT,
-                'user': f'{settings.DB_USER}',
-                'password': f'{settings.DB_PASSWORD}',
-                'database': f'{settings.DB_DATABASE}',
-                'charset': f'{settings.DB_ENCODING}',
-                'echo': settings.DB_ECHO,
+                'host': f'{settings.DATABASE_HOST}',
+                'port': settings.DATABASE_PORT,
+                'user': f'{settings.DATABASE_USER}',
+                'password': f'{settings.DATABASE_PASSWORD}',
+                'database': f'{settings.DATABASE_SCHEMA}',
+                'charset': f'{settings.DATABASE_ENCODING}',
+                'echo': settings.DATABASE_ECHO,
             },
         },
     },
@@ -25,5 +25,5 @@ mysql_config = {
         },
     },
     'use_tz': False,
-    'timezone': settings.DB_TIMEZONE,
+    'timezone': settings.DATABASE_TIMEZONE,
 }

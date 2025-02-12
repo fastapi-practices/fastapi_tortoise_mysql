@@ -11,6 +11,7 @@ from tortoise.contrib.fastapi import RegisterTortoise
 
 from backend.app.router import route
 from backend.common.exception.exception_handler import register_exception
+from backend.common.log import setup_logging, set_customize_logfile
 from backend.core.conf import settings
 from backend.core.path_conf import STATIC_DIR
 from backend.database.db import mysql_config
@@ -58,8 +59,10 @@ def register_app():
         openapi_url=settings.FASTAPI_OPENAPI_URL,
         lifespan=register_init,
     )
+    # 日志
+    register_logger()
 
-    # 注册静态文件
+    # 静态文件
     register_static_file(app)
 
     # 中间件
@@ -75,6 +78,16 @@ def register_app():
     register_exception(app)
 
     return app
+
+
+def register_logger() -> None:
+    """
+    系统日志
+
+    :return:
+    """
+    setup_logging()
+    set_customize_logfile()
 
 
 def register_static_file(app: FastAPI):

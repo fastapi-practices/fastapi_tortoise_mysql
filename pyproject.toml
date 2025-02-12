@@ -23,6 +23,7 @@ dependencies = [
     "python-multipart==0.0.9",
     "redis[hiredis]==5.0.4",
     "tortoise-orm[asyncmy]==0.24.0",
+    "tzdata==2025.1",
     "msgspec>=0.18.6",
     "phonenumbers>=8.13.51",
 ]
