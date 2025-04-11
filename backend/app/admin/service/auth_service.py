@@ -6,7 +6,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from backend.app.admin.crud.crud_user import user_dao
 from backend.app.admin.model.user import User
 from backend.app.admin.schema.token import GetLoginToken
-from backend.app.admin.schema.user import Auth2
+from backend.app.admin.schema.user import AuthLoginParam
 from backend.common.exception import errors
 from backend.common.response.response_code import CustomErrorCode
 from backend.common.security.jwt import create_access_token, password_verify
@@ -33,7 +33,7 @@ class AuthService:
         token = create_access_token(str(user.id))
         return token, user
 
-    async def login(self, *, request: Request, obj: Auth2) -> GetLoginToken:
+    async def login(self, *, request: Request, obj: AuthLoginParam) -> GetLoginToken:
         user = await self.user_verify(obj.username, obj.password)
         try:
             captcha_uuid = request.app.state.captcha_uuid

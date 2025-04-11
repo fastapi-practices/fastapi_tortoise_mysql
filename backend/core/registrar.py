@@ -31,7 +31,11 @@ async def register_init(app: FastAPI):
     # 连接redis
     await redis_client.open()
     # 初始化 limiter
-    await FastAPILimiter.init(redis_client, prefix=settings.LIMITER_REDIS_PREFIX, http_callback=http_limit_callback)
+    await FastAPILimiter.init(
+        redis_client,
+        prefix=settings.LIMITER_REDIS_PREFIX,
+        http_callback=http_limit_callback,
+    )
     # 连接 db
     async with RegisterTortoise(
         app=app,
@@ -59,22 +63,13 @@ def register_app():
         openapi_url=settings.FASTAPI_OPENAPI_URL,
         lifespan=register_init,
     )
-    # 日志
+
+    # 注册组件
     register_logger()
-
-    # 静态文件
     register_static_file(app)
-
-    # 中间件
     register_middleware(app)
-
-    # 路由
     register_router(app)
-
-    # 分页
     register_page(app)
-
-    # 全局异常处理
     register_exception(app)
 
     return app

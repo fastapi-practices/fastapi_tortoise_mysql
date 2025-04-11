@@ -3,7 +3,6 @@
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from pydantic import ValidationError
-from pydantic.errors import PydanticUserError
 from starlette.exceptions import HTTPException
 from starlette.middleware.cors import CORSMiddleware
 from uvicorn.protocols.http.h11_impl import STATUS_PHRASES
@@ -11,10 +10,7 @@ from uvicorn.protocols.http.h11_impl import STATUS_PHRASES
 from backend.common.exception.errors import BaseExceptionMixin
 from backend.common.response.response_code import CustomResponseCode, StandardResponseCode
 from backend.common.response.response_schema import response_base
-from backend.common.schema import (
-    CUSTOM_USAGE_ERROR_MESSAGES,
-    CUSTOM_VALIDATION_ERROR_MESSAGES,
-)
+from backend.common.schema import CUSTOM_VALIDATION_ERROR_MESSAGES
 from backend.core.conf import settings
 from backend.utils.serializers import MsgSpecJSONResponse
 
@@ -77,7 +73,6 @@ async def _validation_exception_handler(request: Request, e: RequestValidationEr
         'msg': msg,
         'data': data,
     }
-    request.state.__request_validation_exception__ = content  # 用于在中间件中获取异常信息
     return MsgSpecJSONResponse(status_code=422, content=content)
 
 
@@ -100,7 +95,6 @@ def register_exception(app: FastAPI):
         else:
             res = response_base.fail(res=CustomResponseCode.HTTP_400)
             content = res.model_dump()
-        request.state.__request_http_exception__ = content
         return MsgSpecJSONResponse(
             status_code=_get_exception_code(exc.status_code),
             content=content,
@@ -129,26 +123,6 @@ def register_exception(app: FastAPI):
         """
         return await _validation_exception_handler(request, exc)
 
-    @app.exception_handler(PydanticUserError)
-    async def pydantic_user_error_handler(request: Request, exc: PydanticUserError):
-        """
-        Pydantic 用户异常处理
-
-        :param request:
-        :param exc:
-        :return:
-        """
-        content = {
-            'code': StandardResponseCode.HTTP_500,
-            'msg': CUSTOM_USAGE_ERROR_MESSAGES.get(exc.code),
-            'data': None,
-        }
-        request.state.__request_pydantic_user_error__ = content
-        return MsgSpecJSONResponse(
-            status_code=StandardResponseCode.HTTP_500,
-            content=content,
-        )
-
     @app.exception_handler(AssertionError)
     async def assertion_error_handler(request: Request, exc: AssertionError):
         """
@@ -167,7 +141,6 @@ def register_exception(app: FastAPI):
         else:
             res = response_base.fail(res=CustomResponseCode.HTTP_500)
             content = res.model_dump()
-        request.state.__request_assertion_error__ = content
         return MsgSpecJSONResponse(
             status_code=StandardResponseCode.HTTP_500,
             content=content,
@@ -187,7 +160,6 @@ def register_exception(app: FastAPI):
             'msg': str(exc.msg),
             'data': exc.data if exc.data else None,
         }
-        request.state.__request_custom_exception__ = content
         return MsgSpecJSONResponse(
             status_code=_get_exception_code(exc.code),
             content=content,
@@ -212,7 +184,6 @@ def register_exception(app: FastAPI):
         else:
             res = response_base.fail(res=CustomResponseCode.HTTP_500)
             content = res.model_dump()
-        request.state.__request_all_unknown_exception__ = content
         return MsgSpecJSONResponse(
             status_code=StandardResponseCode.HTTP_500,
             content=content,
@@ -248,7 +219,6 @@ def register_exception(app: FastAPI):
                 else:
                     res = response_base.fail(res=CustomResponseCode.HTTP_500)
                     content = res.model_dump()
-            request.state.__request_cors_500_exception__ = content
             response = MsgSpecJSONResponse(
                 status_code=exc.code if isinstance(exc, BaseExceptionMixin) else StandardResponseCode.HTTP_500,
                 content=content,

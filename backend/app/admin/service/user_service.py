@@ -3,14 +3,14 @@
 from tortoise.queryset import QuerySet
 from backend.app.admin.crud.crud_user import user_dao
 from backend.app.admin.model.user import User
-from backend.app.admin.schema.user import CreateUser, ResetPassword, UpdateUser, Avatar
+from backend.app.admin.schema.user import RegisterUserParam, ResetPassword, UpdateUserParam, AvatarParam
 from backend.common.exception import errors
 from backend.common.security.jwt import get_hash_password, password_verify, superuser_verify
 
 
 class UserService:
     @staticmethod
-    async def register(*, obj: CreateUser) -> None:
+    async def register(*, obj: RegisterUserParam) -> None:
         if not obj.password:
             raise errors.ForbiddenError(msg='密码为空')
         username = await user_dao.get_by_username(name=obj.username)
@@ -42,7 +42,7 @@ class UserService:
         return user
 
     @staticmethod
-    async def update(*, username: str, obj: UpdateUser) -> int:
+    async def update(*, username: str, obj: UpdateUserParam) -> int:
         input_user = await user_dao.get_by_username(username)
         if not input_user:
             raise errors.NotFoundError(msg='用户不存在')
@@ -59,7 +59,7 @@ class UserService:
         return count
 
     @staticmethod
-    async def update_avatar(*, username: str, avatar: Avatar) -> int:
+    async def update_avatar(*, username: str, avatar: AvatarParam) -> int:
         input_user = await user_dao.get_by_username(username)
         if not input_user:
             raise errors.NotFoundError(msg='用户不存在')
