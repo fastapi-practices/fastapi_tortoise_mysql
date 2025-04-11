@@ -8,7 +8,7 @@ from tortoise.expressions import Q
 from tortoise.transactions import atomic
 
 from backend.app.admin.model.user import User
-from backend.app.admin.schema.user import Avatar, CreateUser, UpdateUser
+from backend.app.admin.schema.user import AvatarParam, RegisterUserParam, UpdateUserParam
 from backend.common.crud import CRUDBase
 from backend.common.security.jwt import get_hash_password
 
@@ -28,7 +28,7 @@ class CRUDUser(CRUDBase[User]):
         return await self.model.filter(email=email).exists()
 
     @atomic()
-    async def register(self, obj: CreateUser) -> None:
+    async def register(self, obj: RegisterUserParam) -> None:
         salt = bcrypt.gensalt()
         obj.password = get_hash_password(obj.password, salt)
         dict_obj = obj.model_dump()
@@ -41,11 +41,11 @@ class CRUDUser(CRUDBase[User]):
         return await self.model.filter(id=pk).update(password=new_pwd)
 
     @atomic()
-    async def update_userinfo(self, input_user: int, obj_in: UpdateUser) -> int:
+    async def update_userinfo(self, input_user: int, obj_in: UpdateUserParam) -> int:
         return await self.update_model(input_user, obj_in)
 
     @atomic()
-    async def update_avatar(self, input_user: int, avatar: Avatar) -> int:
+    async def update_avatar(self, input_user: int, avatar: AvatarParam) -> int:
         return await self.update_model(input_user, {'avatar': avatar.url})
 
     async def get_list(self, username: str = None, phone: str = None, status: int = None) -> QuerySet:
