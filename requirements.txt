@@ -144,7 +144,7 @@ python-dotenv==1.1.0
     # via
     #   pydantic-settings
     #   uvicorn
-python-jose==3.3.0
+python-jose==3.4.0
     # via fastapi-tortoise-mysql
 python-multipart==0.0.9
     # via

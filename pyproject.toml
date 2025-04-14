@@ -18,7 +18,7 @@ dependencies = [
     "loguru==0.7.2",
     "pwdlib==0.2.1",
     "path==16.14.0",
-    "python-jose==3.3.0",
+    "python-jose==3.4.0",
     "python-multipart==0.0.9",
     "redis[hiredis]==5.0.4",
     "tortoise-orm[asyncmy]==0.24.0",
