@@ -69,7 +69,7 @@ fastapi-pagination==0.12.24
     # via fastapi-tortoise-mysql
 filelock==3.18.0
     # via virtualenv
-h11==0.14.0
+h11==0.16.0
     # via
     #   httpcore
     #   uvicorn
